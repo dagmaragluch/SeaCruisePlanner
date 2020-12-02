@@ -17,12 +17,14 @@ public class GraphCreator {
     Point A = new Point(latA, lngA, 0);
     Point B = new Point(latB, lngB);
 
-//    double a = 0.2;     // dł boku trójkąta równobocznego; w stopniach geogr. !
-//    double h = a / 2 * Math.sqrt(3);  // wysokość w trójkącie równobocznym; też w stopniach geogr. !
-//    double doubledH = a * Math.sqrt(3);  // 2 * h; w stopniach geogr. !
-
+    // to test
     double a = 1.0;
-    double doubledH = 2.0;
+    double H = a * 2;
+
+    //    double a = 0.2;     // dł boku trójkąta równobocznego; w stopniach geogr. !
+    //    double h = a / 2 * Math.sqrt(3);  // wysokość w trójkącie równobocznym; też w stopniach geogr. !
+//    double H = a * Math.sqrt(3);  // 2 * h; w stopniach geogr. !
+    double a_2 = a * 2;  // 2 * h; w stopniach geogr. !
 
 
     double areaWidth = 5.0;  // w st. geo
@@ -33,7 +35,6 @@ public class GraphCreator {
 
     //    Point[] vectors = new Point[12];
     Point[] vectors = new Point[4];     //for test
-    int vertexCounter = 0;
     Point[] areaBoundary = createArea();
 
 
@@ -56,29 +57,29 @@ public class GraphCreator {
 //        return vectors;
 //    }
 
-
+    // for test
     public Point[] fillVectorsArray() {
-        vectors[0] = new Point(doubledH - 2 * latA, 0.0);
-        vectors[1] = new Point(0, 2 * (a + lngA));
-        vectors[2] = new Point(-latA, 0.0);
-        vectors[3] = new Point(0, -2 * a);
+        vectors[0] = new Point(0.0, H);          // 0
+        vectors[1] = new Point(a_2, 0.0);        // 3
+        vectors[2] = new Point(0.0, -H);         // 6
+        vectors[3] = new Point(-a_2, 0.0);       // 9
 
         return vectors;
     }
 
-
+    /**
+     * @return 4 points described parallelogram
+     */
     public Point[] createArea() {
         Point[] areaBoundary = new Point[4];
-        areaBoundary[0] = new Point(-areaWidth, lngA);
-        areaBoundary[1] = new Point(areaWidth, lngA);
-        areaBoundary[2] = new Point(areaWidth, lngB);
-        areaBoundary[3] = new Point(-areaWidth, lngB);
+        areaBoundary[0] = new Point(latA - areaWidth, lngA);
+        areaBoundary[1] = new Point(latA + areaWidth, lngA);
+        areaBoundary[2] = new Point(latB + areaWidth, lngB);
+        areaBoundary[3] = new Point(latB - areaWidth, lngB);
         return areaBoundary;
     }
 
     /**
-     * Return true if the given point is contained inside the boundary.
-     *
      * @param pointToCheck The point to check
      * @return true if the point is inside the boundary, false otherwise
      */
@@ -95,8 +96,8 @@ public class GraphCreator {
         return result;
     }
 
-    public void createGraph() {     //change name
-        int l = 1;  //counter
+    public void createGraph() {
+        int vertexCounter = 1;
         Stack<Point> pointsToCheck = new Stack<>();
         Point currentPoint;
         Point currentNeighbour;
@@ -107,6 +108,7 @@ public class GraphCreator {
         //init - put point A into pointsToCheck, graph and allVertices
         pointsToCheck.push(A);
         LinkedList<Point> arrA = new LinkedList<>();
+        arrA.add(A);
         allVertices.add(A);
         graph.add(0, arrA);
 
@@ -128,43 +130,65 @@ public class GraphCreator {
                                 tmpY + vectors[i].getY(), -1);
 
                 //jeśli punkt nalezy do area
-                if (areaContains(currentNeighbour)) {    //  SPRAWDZIĆ CZY SPRAWDZA WARTOŚĆ CZY ADRES!!!
-                    if (!allVertices.contains(currentNeighbour)) {      // point nie ma jeszcze w zbiorze wierzchołków
+                if (areaContains(currentNeighbour)) {
+
+                    if (!isPointInVertices(currentNeighbour)) {      // point nie ma jeszcze w zbiorze wierzchołków
 
                         //nadajemy numer i dodajemy do zbioru wszystkich wierzchołków
-                        currentNeighbour.setNumber(l);
-                        l++;
+                        currentNeighbour.setNumber(vertexCounter);
+                        vertexCounter++;
                         allVertices.add(currentNeighbour);
 
                         LinkedList<Point> list = new LinkedList<>(); //tworzymy nowa listę, dodajemy wierzchołek i dodajemy listę do grafu
+                        list.add(currentNeighbour);
                         addVerticesToAdjacencyList(currentPoint, currentNeighbour);
                         graph.add(currentNeighbour.getNumber(), list);
+                        printGraph();
 
                         pointsToCheck.push(currentNeighbour); //dodajemy do listy pkt do spr
 
                     } else {                                //point jest już w zbiorze wierzchołków
                         addVerticesToAdjacencyList(currentPoint, currentNeighbour);
-//                        addVerticesToAdjacencyList(currentNeighbour, currentPoint);   //czy wykonujemy symetrycznie? => czy graf jest skierowany??
-                        // tak - robimy symetrycznie - graf skierowany w obie strony, bo nie będziemy myśleć czy się cofamy czy nie
-
                     }
                 }
             }
 
 
         }
-
-
     }
 
     /**
-     * @param startVertex
-     * @param neighbour
+     * @param p1
+     * @param p2
      */
-    public void addVerticesToAdjacencyList(Point startVertex, Point neighbour) {
-        int index = startVertex.getNumber();
-        graph.get(index).add(neighbour);
+    public void addVerticesToAdjacencyList(Point p1, Point p2) {
+        int index = p1.getNumber();
+        graph.get(index).add(p2);
+//        graph.get(p2.getNumber()).add(p1);
+        //czy wykonujemy symetrycznie? => czy graf jest skierowany??
+        // tak - robimy symetrycznie - graf skierowany w obie strony, bo nie będziemy myśleć czy się cofamy czy nie
 
+    }
+
+
+    public void printGraph() {
+        for (int i = 0; i < graph.size(); i++) {
+            System.out.print(i + " --> ");
+            for (int j = 0; j < graph.get(i).size(); j++) {
+                System.out.print("(" + graph.get(i).get(j).getX() + ", " + graph.get(i).get(j).getY() + ") ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+
+    public boolean isPointInVertices(Point pointToCheck) {
+        for (Point p : allVertices) {
+            if (p.getX() == pointToCheck.getX() && p.getY() == pointToCheck.getY()) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
