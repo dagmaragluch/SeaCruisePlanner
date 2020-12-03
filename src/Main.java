@@ -7,5 +7,8 @@ public class Main {
         Main main = new Main();
         main.graphCreator.createGraph();
 
+        System.out.println("FINAL GRAPH:");
+        main.graphCreator.printGraph();
+
     }
 }
