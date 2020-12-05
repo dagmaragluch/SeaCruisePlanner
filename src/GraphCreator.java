@@ -17,55 +17,42 @@ public class GraphCreator {
     Point A = new Point(latA, lngA, 0);
     Point B = new Point(latB, lngB);
 
-    // to test
-    double a = 1.0;
-    double H = a * 2;
 
-    //    double a = 0.2;     // dł boku trójkąta równobocznego; w stopniach geogr. !
-//    double h = a / 2 * Math.sqrt(3);  // wysokość w trójkącie równobocznym; też w stopniach geogr. !
-//    double H = a * Math.sqrt(3);  // 2 * h; w stopniach geogr. !
-    double a_2 = a * 2;  // 2 * h; w stopniach geogr. !
-
-
-    double areaWidth = 5.0;  // w st. geo
+//        final double SQRT_3 = Math.sqrt(3);
+    final double SQRT_3 = 1.73;
+    double a = 0.1;     // dł boku trójkąta równobocznego; w stopniach geogr. !
+    double h = a / 2 * SQRT_3;  // wysokość w trójkącie równobocznym; też w stopniach geogr. !
+    double H = a * SQRT_3;  // 2 * h; w stopniach geogr. !
+    double a_2 = a * 2;
+    double areaWidth = 1.0;  // w st. geo; z każdej strony jest tyle
+    double d = a / 2;   // dokładność, z jaką wyznaczne są punkty (wzór można zmodyfikować)
 
 
     Set<Point> allVertices = new HashSet<>();
     List<List<Point>> graph = new ArrayList<>();
 
-    //    Point[] vectors = new Point[12];
-    Point[] vectors = new Point[4];     //for test
+    Point[] vectors = new Point[12];
     Point[] areaBoundary = createArea();
 
 
     private int vertexCounter = 0;
 
 
-//    public Point[] fillVectorsArray() {
-//        vectors[0] = new Point(doubledH - 2 * latA, 0.0);
-//        vectors[3] = new Point(0, 2 * (a + lngA));
-//        vectors[6] = new Point(-latA, 0.0);
-//        vectors[9] = new Point(0, -2 * a);
-//
-//        /* * * temporary values * * */
-//        vectors[1] = new Point(doubledH - 2 * latA, 0.0);
-//        vectors[2] = new Point(0, 2 * (a + lngA));
-//        vectors[4] = new Point(-latA, 0.0);
-//        vectors[5] = new Point(0, -2 * a);
-//        vectors[7] = new Point(doubledH - 2 * latA, 0.0);
-//        vectors[8] = new Point(0, 2 * (a + lngA));
-//        vectors[10] = new Point(-latA, 0.0);
-//        vectors[11] = new Point(0, -2 * a);
-//
-//        return vectors;
-//    }
-
-    // for test
     public Point[] fillVectorsArray() {
-        vectors[0] = new Point(0.0, H);          // 0
-        vectors[1] = new Point(a_2, 0.0);        // 3
-        vectors[2] = new Point(0.0, -H);         // 6
-        vectors[3] = new Point(-a_2, 0.0);       // 9
+        vectors[0] = new Point(0.0, H);
+        vectors[3] = new Point(a_2, 0.0);
+        vectors[6] = new Point(0.0, -H);
+        vectors[9] = new Point(-a_2, 0.0);
+
+        vectors[1] = new Point(a, H);
+        vectors[5] = new Point(a, -H);
+        vectors[7] = new Point(-a, -H);
+        vectors[11] = new Point(-a, H);
+
+        vectors[2] = new Point(h * SQRT_3, h);
+        vectors[4] = new Point(h * SQRT_3, -h);
+        vectors[8] = new Point(-h * SQRT_3, -h);
+        vectors[10] = new Point(-h * SQRT_3, h);
 
         return vectors;
     }
@@ -126,14 +113,14 @@ public class GraphCreator {
                     if (!isPointInVertices(currentNeighbour)) {      // point nie ma jeszcze w zbiorze wierzchołków
                         addNewVertex(currentNeighbour, pointsToCheck);
                         addVerticesToAdjacencyList(currentPoint, currentNeighbour);
-                        //printGraph();
+//                        printGraph();
                     } else {                                //point jest już w zbiorze wierzchołków
                         addVerticesToAdjacencyList(currentPoint, currentNeighbour);
                         //printGraph();
                     }
                 }
             }
-
+//            printGraph();
         }
     }
 
@@ -163,7 +150,7 @@ public class GraphCreator {
         vertexCounter++;
         allVertices.add(newVertex);
 
-        LinkedList<Point> list = new LinkedList<>(); //tworzymy nowa listę, dodajemywierzchołek i dodajemy listę do grafu
+        LinkedList<Point> list = new LinkedList<>(); //tworzymy nowa listę, dodajemy wierzchołek i dodajemy listę do grafu
         list.add(newVertex);
         graph.add(newVertex.getNumber(), list);
 
@@ -187,7 +174,8 @@ public class GraphCreator {
      */
     public boolean isPointInVertices(Point pointToCheck) {
         for (Point p : allVertices) {
-            if (p.getX() == pointToCheck.getX() && p.getY() == pointToCheck.getY()) {
+            //if (p.getX() == pointToCheck.getX() && p.getY() == pointToCheck.getY()) {
+            if (Math.abs(p.getX() - pointToCheck.getX()) < d && Math.abs(p.getY() - pointToCheck.getY()) < d) {
                 return true;
             }
         }
