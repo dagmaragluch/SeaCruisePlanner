@@ -2,29 +2,29 @@ import java.util.*;
 
 public class GraphCreator {
 
-//    double latA = 53.94;    //A - Swinoujście
-//    double lngA = 14.28;
-//    double latB = 55.09;    //B - Borholm
-//    double lngB = 14.69;    // odl. - ok. 135 km
+    double latA = 53.94;    //A - Swinoujście
+    double lngA = 14.28;
+    double latB = 55.09;    //B - Borholm
+    double lngB = 14.69;    // odl. - ok. 135 km
 
     //to test
-    double latA = 10.0;
-    double lngA = 15.0;
-    double latB = 10.0;
-    double lngB = 22.0;
+//    double latA = 10.0;
+//    double lngA = 15.0;
+//    double latB = 10.0;
+//    double lngB = 22.0;
 
 
     Point A = new Point(latA, lngA, 0);
     Point B = new Point(latB, lngB);
 
 
-//        final double SQRT_3 = Math.sqrt(3);
+    //        final double SQRT_3 = Math.sqrt(3);
     final double SQRT_3 = 1.73;
     double a = 0.1;     // dł boku trójkąta równobocznego; w stopniach geogr. !
     double h = a / 2 * SQRT_3;  // wysokość w trójkącie równobocznym; też w stopniach geogr. !
     double H = a * SQRT_3;  // 2 * h; w stopniach geogr. !
     double a_2 = a * 2;
-    double areaWidth = 1.0;  // w st. geo; z każdej strony jest tyle
+    double areaWidth = 0.5;  // w st. geo; z każdej strony jest tyle
     double d = a / 2;   // dokładność, z jaką wyznaczne są punkty (wzór można zmodyfikować)
 
 
@@ -175,7 +175,7 @@ public class GraphCreator {
     public boolean isPointInVertices(Point pointToCheck) {
         for (Point p : allVertices) {
             //if (p.getX() == pointToCheck.getX() && p.getY() == pointToCheck.getY()) {
-            if (Math.abs(p.getX() - pointToCheck.getX()) < d && Math.abs(p.getY() - pointToCheck.getY()) < d) {
+            if (Math.abs(p.getX() - pointToCheck.getX()) < d && Math.abs(p.getY() - pointToCheck.getY()) < d) { //porównanie nie '==' a co do dokładności d
                 return true;
             }
         }
