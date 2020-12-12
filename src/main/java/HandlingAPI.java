@@ -1,3 +1,5 @@
+import com.google.gson.*;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -11,9 +13,9 @@ import java.util.Set;
 
 public class HandlingAPI {
 
-    public void fetchData(Set<Point> vertices) throws IOException {     //w przyszłość dodać jeszcze datę
+    public void fetchData(Set<Point> vertices) {     //w przyszłość dodać jeszcze datę
         for (Point p : vertices) {
-            getResponse(p.getX(), p.getY());
+            convertJSON(p);
         }
     }
 
@@ -33,9 +35,8 @@ public class HandlingAPI {
 
         try (Scanner scanner = new Scanner(response)) {
             responseBody = scanner.useDelimiter("\\A").next();
-            System.out.print(responseBody);
+//            System.out.print(responseBody);
         }
-
         return responseBody;
     }
 
@@ -54,6 +55,31 @@ public class HandlingAPI {
         return resultString.length() > 0
                 ? resultString.substring(0, resultString.length() - 1)
                 : resultString;
+    }
+
+    public void convertJSON(Point p){
+        try {
+            String responseString = getResponse(p.getX(), p.getY());
+            JsonObject json1 = new JsonParser().parse(responseString).getAsJsonObject();
+            JsonArray json2 = json1.get("hours").getAsJsonArray();
+
+            GsonBuilder builder = new GsonBuilder();
+            builder.setPrettyPrinting().create();
+            Gson gson = builder.create();
+            JsonObject json3;
+
+
+            for (int i = 0; i < json2.size(); i++){
+                json3 = json2.get(i).getAsJsonObject();
+                HourlyData hourlyData = gson.fromJson(json3, HourlyData.class);
+
+                Tuple<Double, Double> dataTuple = new Tuple(hourlyData.getWindDirection().get("sg"), hourlyData.getWindSpeed().get("sg"));
+                p.addWeatherData(dataTuple);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

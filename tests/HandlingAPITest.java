@@ -115,4 +115,31 @@ public class HandlingAPITest {
     }
 
 
+    @Test
+    public void finalTest(){
+        try {
+            String responseString = handlingAPI.getResponse(53.94, 14.28);
+            JsonObject json1 = new JsonParser().parse(responseString).getAsJsonObject();
+            JsonArray json2 = json1.get("hours").getAsJsonArray();
+
+            GsonBuilder builder = new GsonBuilder();
+            builder.setPrettyPrinting().create();
+            Gson gson = builder.create();
+            JsonObject json3;
+
+
+            for (int i = 0; i < json2.size(); i++){
+                json3 = json2.get(i).getAsJsonObject();
+                HourlyData hourlyData = gson.fromJson(json3, HourlyData.class);
+
+                Tuple<Double, Double> dataTuple = new Tuple(hourlyData.getWindDirection().get("sg"), hourlyData.getWindSpeed().get("sg"));
+                System.out.println(dataTuple.toString());
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
