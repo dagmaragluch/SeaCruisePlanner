@@ -17,8 +17,8 @@ public class HandlingAPI {
         }
     }
 
-    public void getResponse(double lat, double lng) throws IOException {
-
+    public String getResponse(double lat, double lng) throws IOException {
+        String responseBody;
         String url = "https://api.stormglass.io/v2/weather/point";
         Map<String, String> parameters = new HashMap<>();
         parameters.put("lat", Double.toString(lat));
@@ -32,9 +32,11 @@ public class HandlingAPI {
         InputStream response = connection.getInputStream();
 
         try (Scanner scanner = new Scanner(response)) {
-            String responseBody = scanner.useDelimiter("\\A").next();
-            System.out.println(responseBody);
+            responseBody = scanner.useDelimiter("\\A").next();
+            System.out.print(responseBody);
         }
+
+        return responseBody;
     }
 
     public String getParamsString(Map<String, String> params)
