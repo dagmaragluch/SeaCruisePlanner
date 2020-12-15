@@ -13,9 +13,9 @@ import java.util.Set;
 
 public class HandlingAPI {
 
-    public void fetchData(Set<Point> vertices) {     //w przyszłość dodać jeszcze datę
-        for (Point p : vertices) {
-            convertJSON(p);
+    public void fetchData(Set<Vertex> vertices) {     //w przyszłość dodać jeszcze datę
+        for (Vertex v : vertices) {
+            convertJSON(v);
         }
     }
 
@@ -57,9 +57,9 @@ public class HandlingAPI {
                 : resultString;
     }
 
-    public void convertJSON(Point p){
+    public void convertJSON(Vertex v){
         try {
-            String responseString = getResponse(p.getX(), p.getY());
+            String responseString = getResponse(v.getX(), v.getY());
             JsonObject json1 = new JsonParser().parse(responseString).getAsJsonObject();
             JsonArray json2 = json1.get("hours").getAsJsonArray();
 
@@ -74,7 +74,7 @@ public class HandlingAPI {
                 HourlyData hourlyData = gson.fromJson(json3, HourlyData.class);
 
                 Tuple<Double, Double> dataTuple = new Tuple(hourlyData.getWindDirection().get("sg"), hourlyData.getWindSpeed().get("sg"));
-                p.addWeatherData(dataTuple);
+                v.addWeatherData(dataTuple);
             }
 
         } catch (IOException e) {

@@ -14,22 +14,23 @@ public class GraphCreator {
 //    double lngB = 22.0;
 
 
-    Point A = new Point(latA, lngA, 0);
+    Vertex A = new Vertex(latA, lngA, 0);
     Point B = new Point(latB, lngB);
 
 
-    //        final double SQRT_3 = Math.sqrt(3);
+    //final double SQRT_3 = Math.sqrt(3);
     final double SQRT_3 = 1.73;
     double a = 0.1;     // dł boku trójkąta równobocznego; w stopniach geogr. !
     double h = a / 2 * SQRT_3;  // wysokość w trójkącie równobocznym; też w stopniach geogr. !
     double H = a * SQRT_3;  // 2 * h; w stopniach geogr. !
     double a_2 = a * 2;
     double areaWidth = 0.5;  // w st. geo; z każdej strony jest tyle
-    double d = a / 2;   // dokładność, z jaką wyznaczne są punkty (wzór można zmodyfikować)
+    //    double d = a / 2;   // dokładność, z jaką wyznaczne są punkty - odległość środka trójkąta od wierzchołka
+    double d = (2 * a) / SQRT_3;   // dokładność, z jaką wyznaczne są punkty - odległość środka trójkąta od wierzchołka
 
 
-    Set<Point> allVertices = new HashSet<>();
-    List<List<Point>> graph = new ArrayList<>();
+    Set<Vertex> allVertices = new HashSet<>();
+    List<List<Vertex>> graph = new ArrayList<>();
 
     Point[] vectors = new Point[12];
     Point[] areaBoundary = createArea();
@@ -73,7 +74,7 @@ public class GraphCreator {
      * @param pointToCheck The point to check
      * @return true if the point is inside the boundary, false otherwise
      */
-    public boolean areaContains(Point pointToCheck) {
+    public boolean areaContains(Vertex pointToCheck) {   //??
         int i;
         int j;
         boolean result = false;
@@ -87,9 +88,9 @@ public class GraphCreator {
     }
 
     public void createGraph() {
-        Stack<Point> pointsToCheck = new Stack<>();
-        Point currentPoint;
-        Point currentNeighbour;
+        Stack<Vertex> pointsToCheck = new Stack<>();
+        Vertex currentPoint;
+        Vertex currentNeighbour;
         vectors = fillVectorsArray();
 
         //init - add point A
@@ -105,7 +106,7 @@ public class GraphCreator {
 
                 //tworzymy danego sąsiada
                 currentNeighbour =
-                        new Point(currentPoint.getX() + vectors[i].getX(),
+                        new Vertex(currentPoint.getX() + vectors[i].getX(),
                                 currentPoint.getY() + vectors[i].getY(), -1);
 
                 if (areaContains(currentNeighbour)) {    //jeśli punkt nalezy do area
@@ -113,14 +114,11 @@ public class GraphCreator {
                     if (!isPointInVertices(currentNeighbour)) {      // point nie ma jeszcze w zbiorze wierzchołków
                         addNewVertex(currentNeighbour, pointsToCheck);
                         addVerticesToAdjacencyList(currentPoint, currentNeighbour);
-//                        printGraph();
                     } else {                                //point jest już w zbiorze wierzchołków
                         addVerticesToAdjacencyList(currentPoint, currentNeighbour);
-                        //printGraph();
                     }
                 }
             }
-//            printGraph();
         }
     }
 
@@ -129,8 +127,8 @@ public class GraphCreator {
      * @param startVertex - point, for which we are looking for neighbours
      * @param neighbour   - found neighbour
      */
-    public void addVerticesToAdjacencyList(Point startVertex, Point neighbour) {
-        int index = startVertex.getNumber();
+    public void addVerticesToAdjacencyList(Vertex startVertex, Vertex neighbour) {
+        int index = startVertex.getIndex();
         graph.get(index).add(neighbour);
     }
 
@@ -144,15 +142,15 @@ public class GraphCreator {
      * @param newVertex     - vertex to add
      * @param pointsToCheck - stack of vertices don't checked yet
      */
-    public void addNewVertex(Point newVertex, Stack<Point> pointsToCheck) {
+    public void addNewVertex(Vertex newVertex, Stack<Vertex> pointsToCheck) {
 
-        newVertex.setNumber(vertexCounter);     //nadajemy numer i dodajemy do zbioru wszystkich wierzchołków
+        newVertex.setIndex(vertexCounter);     //nadajemy numer i dodajemy do zbioru wszystkich wierzchołków
         vertexCounter++;
         allVertices.add(newVertex);
 
-        LinkedList<Point> list = new LinkedList<>(); //tworzymy nowa listę, dodajemy wierzchołek i dodajemy listę do grafu
+        LinkedList<Vertex> list = new LinkedList<>(); //tworzymy nowa listę, dodajemy wierzchołek i dodajemy listę do grafu
         list.add(newVertex);
-        graph.add(newVertex.getNumber(), list);
+        graph.add(newVertex.getIndex(), list);
 
         pointsToCheck.push(newVertex); //dodajemy do stosu punktów do sprawdzenia
     }
@@ -172,8 +170,8 @@ public class GraphCreator {
     /**
      * @return true if point is already in allVertices set, false otherwise
      */
-    public boolean isPointInVertices(Point pointToCheck) {
-        for (Point p : allVertices) {
+    public boolean isPointInVertices(Vertex pointToCheck) {
+        for (Vertex p : allVertices) {
             //if (p.getX() == pointToCheck.getX() && p.getY() == pointToCheck.getY()) {
             if (Math.abs(p.getX() - pointToCheck.getX()) < d && Math.abs(p.getY() - pointToCheck.getY()) < d) { //porównanie nie '==' a co do dokładności d
                 return true;
