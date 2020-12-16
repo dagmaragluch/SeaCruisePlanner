@@ -40,8 +40,13 @@ public class Edge {
         this.weight = weight;
     }
 
+//    @Override
+//    public String toString() {
+//        return String.format("%s -(%f)-> %s", start, weight, end);
+//    }
+
     @Override
     public String toString() {
-        return String.format("%s -(%f)-> %s", start, weight, end);
+        return String.format("%s->%s", start.getIndex(), end.getIndex());
     }
 }

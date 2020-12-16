@@ -11,13 +11,9 @@ public class Main {
         main.graphCreator.createGraph();
 
         System.out.println("FINAL GRAPH:");
-        main.graphCreator.printGraph();
-        System.out.println();
-        main.graphCreator.printGraphByIndex();
-        System.out.println();
-        System.out.println(main.graphCreator.printGraphByIndex2());
+        main.graphCreator.GRAPH.printGraphByIndexes();
 
-        System.out.println("\n Data from API:");
+//        System.out.println("\n Data from API:");
 //        main.handlingAPI.fetchData(main.graphCreator.allVertices);
 
     }

@@ -29,16 +29,11 @@ public class GraphCreator {
     double d = (2 * a) / SQRT_3;   // dokładność, z jaką wyznaczne są punkty - odległość środka trójkąta od wierzchołka
 
 
-    Set<Vertex> allVertices = new HashSet<>();
-    List<List<Vertex>> graph = new ArrayList<>();
-    Map<Vertex, List<Edge>> graph2 = new HashMap<>();
+    Graph GRAPH = new Graph(new HashMap<>());
+    Map<Vertex, List<Edge>> graph = GRAPH.getGraph();
 
     Vector[] vectors = new Vector[12];
     Point[] areaBoundary = createArea();
-
-
-    private int vertexCounter = 0;
-    private int vertexCounter2 = 0;
 
 
     public Vector[] fillVectorsArray() {
@@ -98,13 +93,6 @@ public class GraphCreator {
         //init - add point A
         addNewVertex(A, pointsToCheck);
 
-        //// - init v2
-        A.setIndex(vertexCounter2);     //nadajemy numer i dodajemy do zbioru wszystkich wierzchołków
-        vertexCounter2++;
-        allVertices.add(A);
-        List<Edge> edges = new ArrayList<>();
-        graph2.put(A, edges);
-
 
         while (!pointsToCheck.isEmpty()) {
 
@@ -126,18 +114,13 @@ public class GraphCreator {
                     if (alreadyFoundVertex == null) {      // point nie ma jeszcze w zbiorze wierzchołków
                         newEdge = new Edge(currentPoint, currentNeighbour, i * 30, vectors[i].getLength());
 
-                        addNewEdge(currentNeighbour, pointsToCheck, newEdge);
+                        addNewVertex(currentNeighbour, pointsToCheck);
                         addEdgeToAdjacencyList(currentPoint, currentNeighbour, newEdge);
 
-
-                        addNewVertex(currentNeighbour, pointsToCheck);
-                        addVerticesToAdjacencyList(currentPoint, currentNeighbour);
 
                     } else {                                //point jest już w zbiorze wierzchołków
                         newEdge = new Edge(currentPoint, alreadyFoundVertex, i * 30, vectors[i].getLength());
                         addEdgeToAdjacencyList(currentPoint, alreadyFoundVertex, newEdge);
-
-                        addVerticesToAdjacencyList(currentPoint, alreadyFoundVertex);
                     }
                 }
             }
@@ -146,35 +129,22 @@ public class GraphCreator {
 
 
     /**
-     * @param startVertex - point, for which we are looking for neighbours
-     * @param neighbour   - found neighbour
-     */
-    public void addVerticesToAdjacencyList(Vertex startVertex, Vertex neighbour) {
-        int index = startVertex.getIndex();
-        List<Vertex> list = graph.get(index);
-        if (!list.contains(neighbour)) {    //żeby uniknąć duplikatów (może zdarzyć się sytuacja, że kilka punktów sprowadzamy do jednego)
-            list.add(neighbour);
-        }
-    }
-
-    /**
-     *
      * @param startVertex - key vertex
-     * @param neighbour - new found vertex
-     * @param newEdge - edge from startVertex to neighbour
+     * @param neighbour   - new found vertex
+     * @param newEdge     - edge from startVertex to neighbour
      */
     public void addEdgeToAdjacencyList(Vertex startVertex, Vertex neighbour, Edge newEdge) {
-        List<Edge> edges = graph2.get(startVertex);
+        List<Edge> edges = graph.get(startVertex);
 
-        if (!isVertexAlreadyInEdgesList(neighbour, edges)){
-            Objects.requireNonNull(graph2.put(startVertex, edges)).add(newEdge);
+        if (!isVertexAlreadyInEdgesList(neighbour, edges)) {
+            Objects.requireNonNull(graph.put(startVertex, edges)).add(newEdge);
         }
     }
 
 
     public boolean isVertexAlreadyInEdgesList(Vertex vertexToCheck, List<Edge> edges) {
         for (Edge e : edges) {
-            if (e.getEnd() == vertexToCheck) {      //zmienić na index ???
+            if (e.getEnd().getIndex() == vertexToCheck.getIndex()) {
                 return true;
             }
         }
@@ -193,72 +163,14 @@ public class GraphCreator {
      */
     public void addNewVertex(Vertex newVertex, Stack<Vertex> pointsToCheck) {
 
-        newVertex.setIndex(vertexCounter);     //nadajemy numer i dodajemy do zbioru wszystkich wierzchołków
-        vertexCounter++;
-        allVertices.add(newVertex);
-
-        List<Vertex> list = new ArrayList<>(); //tworzymy nowa listę, dodajemy wierzchołek i dodajemy listę do grafu
-        list.add(newVertex);
-        graph.add(newVertex.getIndex(), list);
-
-        pointsToCheck.push(newVertex); //dodajemy do stosu punktów do sprawdzenia
-    }
-
-
-
-
-    public void addNewEdge(Vertex newVertex, Stack<Vertex> pointsToCheck, Edge newEdge) {
-
-        newVertex.setIndex(vertexCounter2);     //nadajemy numer i dodajemy do zbioru wszystkich wierzchołków
-        vertexCounter2++;
-        allVertices.add(newVertex);
+        newVertex.setIndex(GRAPH.getVerticesCount());     //nadajemy numer i dodajemy do zbioru wszystkich wierzchołków
+        GRAPH.increaseVerticesCounter();
+        GRAPH.getAllVertices().add(newVertex);
 
         List<Edge> edges = new ArrayList<>();   //tworzymy nowa listę, dodajemy wierzchołek i dodajemy listę do grafu
-        edges.add(newEdge);
-        graph2.put(newVertex, edges);
+        graph.put(newVertex, edges);
 
         pointsToCheck.push(newVertex); //dodajemy do stosu punktów do sprawdzenia
-    }
-
-
-
-
-
-
-    public void printGraph() {
-        for (int i = 0; i < graph.size(); i++) {
-            System.out.print(i + " --> ");
-            for (int j = 0; j < graph.get(i).size(); j++) {
-                System.out.print(graph.get(i).get(j).toString() + " ");
-            }
-            System.out.println();
-        }
-        System.out.println();
-    }
-
-    public void printGraphByIndex() {
-        for (int i = 0; i < graph.size(); i++) {
-            System.out.print(i + " --> ");
-            for (int j = 0; j < graph.get(i).size(); j++) {
-                System.out.print(graph.get(i).get(j).getIndex() + " ");
-            }
-            System.out.println();
-        }
-        System.out.println();
-    }
-
-
-    public String printGraphByIndex2() {
-        StringBuilder b = new StringBuilder();
-        for (Map.Entry<Vertex, List<Edge>> entry : graph2.entrySet()) {
-            b.append(entry.getKey().getIndex()).append("--> ");
-            for (Edge e : entry.getValue()) {
-                b.append(e.getEnd().getIndex()).append(" ");
-            }
-            b.append("\n");
-        }
-        b.append("\n");
-        return b.toString();
     }
 
 
@@ -266,7 +178,7 @@ public class GraphCreator {
      * @return if given point is already in allVertices set return "identity" point, otherwise return null
      */
     public Vertex isPointInVertices(Vertex pointToCheck) {
-        for (Vertex p : allVertices) {
+        for (Vertex p : GRAPH.getAllVertices()) {
             //if (p.getX() == pointToCheck.getX() && p.getY() == pointToCheck.getY()) {
             if (Math.abs(p.getX() - pointToCheck.getX()) < d && Math.abs(p.getY() - pointToCheck.getY()) < d) { //porównanie nie '==' a co do dokładności d
 
