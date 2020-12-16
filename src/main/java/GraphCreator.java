@@ -111,11 +111,15 @@ public class GraphCreator {
 
                 if (areaContains(currentNeighbour)) {    //jeśli punkt nalezy do area
 
-                    if (!isPointInVertices(currentNeighbour)) {      // point nie ma jeszcze w zbiorze wierzchołków
+
+                    Vertex alreadyFoundVertex = isPointInVertices(currentNeighbour); // vertex, witch we already found in allVertices
+
+                    if (alreadyFoundVertex == null) {      // point nie ma jeszcze w zbiorze wierzchołków
                         addNewVertex(currentNeighbour, pointsToCheck);
                         addVerticesToAdjacencyList(currentPoint, currentNeighbour);
+
                     } else {                                //point jest już w zbiorze wierzchołków
-                        addVerticesToAdjacencyList(currentPoint, currentNeighbour);
+                        addVerticesToAdjacencyList(currentPoint, alreadyFoundVertex);
                     }
                 }
             }
@@ -129,7 +133,10 @@ public class GraphCreator {
      */
     public void addVerticesToAdjacencyList(Vertex startVertex, Vertex neighbour) {
         int index = startVertex.getIndex();
-        graph.get(index).add(neighbour);
+        List<Vertex> list = graph.get(index);
+        if (!list.contains(neighbour)) {    //żeby uniknąć duplikatów (może zdarzyć się sytuacja, że kilka punktów sprowadzamy do jednego)
+            list.add(neighbour);
+        }
     }
 
 
@@ -148,7 +155,7 @@ public class GraphCreator {
         vertexCounter++;
         allVertices.add(newVertex);
 
-        LinkedList<Vertex> list = new LinkedList<>(); //tworzymy nowa listę, dodajemy wierzchołek i dodajemy listę do grafu
+        List<Vertex> list = new LinkedList<>(); //tworzymy nowa listę, dodajemy wierzchołek i dodajemy listę do grafu
         list.add(newVertex);
         graph.add(newVertex.getIndex(), list);
 
@@ -167,17 +174,31 @@ public class GraphCreator {
         System.out.println();
     }
 
+    public void printGraphByIndex() {
+        for (int i = 0; i < graph.size(); i++) {
+            System.out.print(i + " --> ");
+            for (int j = 0; j < graph.get(i).size(); j++) {
+                System.out.print(graph.get(i).get(j).getIndex() + " ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+
+
     /**
-     * @return true if point is already in allVertices set, false otherwise
+     * @return if given point is already in allVertices set return "identity" point, otherwise return null
      */
-    public boolean isPointInVertices(Vertex pointToCheck) {
+    public Vertex isPointInVertices(Vertex pointToCheck) {
         for (Vertex p : allVertices) {
             //if (p.getX() == pointToCheck.getX() && p.getY() == pointToCheck.getY()) {
             if (Math.abs(p.getX() - pointToCheck.getX()) < d && Math.abs(p.getY() - pointToCheck.getY()) < d) { //porównanie nie '==' a co do dokładności d
-                return true;
+
+                // trzeba jeszcze zmienić pointToCheck, żeby uniknąć "duplikatów" punktów - reprezentujemy go  punktem p
+                return p;
             }
         }
-        return false;
+        return null;
     }
 
 

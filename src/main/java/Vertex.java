@@ -50,7 +50,7 @@ public class Vertex {
     }
 
     public String toString() {
-        return "(" + this.x + ", " + this.y + ")";
+        return String.format("(%.5f, %.5f)", this.x, this.y);
     }
 
 }
