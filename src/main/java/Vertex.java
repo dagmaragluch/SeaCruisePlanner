@@ -49,8 +49,12 @@ public class Vertex {
         this.weatherData.add(hourlyData);
     }
 
+//    public String toString() {
+//        return String.format("(%.4f, %.4f)", this.x, this.y);
+//    }
+
     public String toString() {
-        return String.format("(%.5f, %.5f)", this.x, this.y);
+        return String.valueOf(this.getIndex());
     }
 
 }
