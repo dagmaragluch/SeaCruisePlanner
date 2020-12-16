@@ -25,35 +25,35 @@ public class GraphCreator {
     double H = a * SQRT_3;  // 2 * h; w stopniach geogr. !
     double a_2 = a * 2;
     double areaWidth = 0.5;  // w st. geo; z każdej strony jest tyle
-    //    double d = a / 2;   // dokładność, z jaką wyznaczne są punkty - odległość środka trójkąta od wierzchołka
+    //    double d = a / 2;
     double d = (2 * a) / SQRT_3;   // dokładność, z jaką wyznaczne są punkty - odległość środka trójkąta od wierzchołka
 
 
     Set<Vertex> allVertices = new HashSet<>();
     List<List<Vertex>> graph = new ArrayList<>();
 
-    Point[] vectors = new Point[12];
+    Vector[] vectors = new Vector[12];
     Point[] areaBoundary = createArea();
 
 
     private int vertexCounter = 0;
 
 
-    public Point[] fillVectorsArray() {
-        vectors[0] = new Point(0.0, H);
-        vectors[3] = new Point(a_2, 0.0);
-        vectors[6] = new Point(0.0, -H);
-        vectors[9] = new Point(-a_2, 0.0);
+    public Vector[] fillVectorsArray() {
+        vectors[0] = new Vector(0.0, H, H);
+        vectors[3] = new Vector(a_2, 0.0, a_2);
+        vectors[6] = new Vector(0.0, -H, H);
+        vectors[9] = new Vector(-a_2, 0.0, a_2);
 
-        vectors[1] = new Point(a, H);
-        vectors[5] = new Point(a, -H);
-        vectors[7] = new Point(-a, -H);
-        vectors[11] = new Point(-a, H);
+        vectors[1] = new Vector(a, H, a_2);
+        vectors[5] = new Vector(a, -H, a_2);
+        vectors[7] = new Vector(-a, -H, a_2);
+        vectors[11] = new Vector(-a, H, a_2);
 
-        vectors[2] = new Point(h * SQRT_3, h);
-        vectors[4] = new Point(h * SQRT_3, -h);
-        vectors[8] = new Point(-h * SQRT_3, -h);
-        vectors[10] = new Point(-h * SQRT_3, h);
+        vectors[2] = new Vector(h * SQRT_3, h, H);
+        vectors[4] = new Vector(h * SQRT_3, -h, H);
+        vectors[8] = new Vector(-h * SQRT_3, -h, H);
+        vectors[10] = new Vector(-h * SQRT_3, h, H);
 
         return vectors;
     }
@@ -155,7 +155,7 @@ public class GraphCreator {
         vertexCounter++;
         allVertices.add(newVertex);
 
-        List<Vertex> list = new LinkedList<>(); //tworzymy nowa listę, dodajemy wierzchołek i dodajemy listę do grafu
+        List<Vertex> list = new ArrayList<>(); //tworzymy nowa listę, dodajemy wierzchołek i dodajemy listę do grafu
         list.add(newVertex);
         graph.add(newVertex.getIndex(), list);
 
