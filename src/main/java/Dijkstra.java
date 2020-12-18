@@ -78,7 +78,7 @@ public class Dijkstra {
         double edgeLength = edge.getEdgeLength() * 111;     // [km]
         int alpha = edge.getAlpha();
         int indexWindDirection = windDirectionToIndex(windDirection);
-        double roundedWindSpeed = round(windSpeed);
+        double roundedWindSpeed = quantizeWindSpeed(windSpeed);
 
         double jachtSpeed = delphia47.delphia47.get(roundedWindSpeed)[indexWindDirection];
 //        System.out.println("jacht speed = " + jachtSpeed);
@@ -90,14 +90,22 @@ public class Dijkstra {
     }
 
 
-    public double round(double numberToRound) {
+    /**
+     * replace(?) given value to available key data from polar plot
+     *
+     * @param valueToQuantize - the exact value of wind speed from weather forecast
+     * @return quantized value
+     */
+    public double quantizeWindSpeed(double valueToQuantize) {
         Double[] numbers = delphia47.delphia47.keySet().toArray(new Double[0]);
+        Arrays.sort(numbers);
+
         double d1;
         double d2;
 
         for (int i = 0; i < numbers.length - 1; i++) {
-            d1 = Math.abs(numberToRound - numbers[i]);
-            d2 = Math.abs(numberToRound - numbers[i + 1]);
+            d1 = Math.abs(valueToQuantize - numbers[i]);
+            d2 = Math.abs(valueToQuantize - numbers[i + 1]);
 
             if (d1 < d2) {
                 return numbers[i];
