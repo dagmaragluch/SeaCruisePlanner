@@ -40,4 +40,14 @@ public class DijkstraTest {
         Assert.assertEquals(30, dijkstra.calculateAngle(180, 210));
     }
 
+
+    @Test
+    public void windDirectionToIndexTest(){
+        Assert.assertEquals(0, dijkstra.windDirectionToIndex(90, 90));
+        Assert.assertEquals(1, dijkstra.windDirectionToIndex(90, 120));
+        Assert.assertEquals(6, dijkstra.windDirectionToIndex(90, 270));
+        Assert.assertEquals(1, dijkstra.windDirectionToIndex(180, 150));
+        Assert.assertEquals(3, dijkstra.windDirectionToIndex(0, 270));
+    }
+
 }

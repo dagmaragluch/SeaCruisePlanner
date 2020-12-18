@@ -1,5 +1,3 @@
-import java.io.IOException;
-
 public class Main {
 
     GraphCreator graphCreator = new GraphCreator();
@@ -8,7 +6,7 @@ public class Main {
     private static Vertex start;
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         Main main = new Main();
         main.graphCreator.createGraph();
 
@@ -24,9 +22,6 @@ public class Main {
         Graph graph = main.graphCreator.GRAPH;
         dijkstra = new Dijkstra(graph);
         runDijkstra();
-
-        Delphia47 delphia47 = new Delphia47();
-//        System.out.println("test = " + delphia47.delphia47.get(12.0)[3]);
     }
 
 

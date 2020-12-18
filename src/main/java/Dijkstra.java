@@ -77,7 +77,7 @@ public class Dijkstra {
 
         double edgeLength = edge.getEdgeLength() * 111;     // [km]
         int alpha = edge.getAlpha();
-        int indexWindDirection = windDirectionToIndex(windDirection);
+        int indexWindDirection = windDirectionToIndex(alpha, windDirection);
         double roundedWindSpeed = quantizeWindSpeed(windSpeed);
 
         double jachtSpeed = delphia47.delphia47.get(roundedWindSpeed)[indexWindDirection];
@@ -114,15 +114,13 @@ public class Dijkstra {
         return numbers[numbers.length - 1];
     }
 
-    // w przyszłości dodać alfę i policzyć różnicę między kątami - bo łódka nie zawsze płynie na północ :(
-    public int windDirectionToIndex(double windDirection) {
-        double windDirection2 = windDirection;
+    public int windDirectionToIndex(int alpha, int windDirection) {
+        int realWindDirection = calculateAngle(alpha, windDirection);
 
-        if (windDirection2 > 180) {      //bo wiatr z lewej i z prawej burty działa tak samo
-            windDirection2 = 360 - windDirection2;
+        if (realWindDirection > 180) {      //bo wiatr z lewej i z prawej burty działa tak samo
+            realWindDirection = 360 - realWindDirection;
         }
-
-        return (int) Math.round(windDirection2 / 30.0);
+        return (int) Math.round(realWindDirection / 30.0);
     }
 
 
