@@ -2,6 +2,7 @@ import java.util.*;
 
 public class Dijkstra {
     private Graph graph;
+    Delphia47 delphia47 = new Delphia47();
 
     public Dijkstra(Graph graph) {
         this.graph = graph;
@@ -30,6 +31,16 @@ public class Dijkstra {
 
             for (Edge edge : graph.getGraph().get(v)) {
                 var edgeEnd = edge.getEnd();
+
+                /************/
+                System.out.println("windDirection = " + edge.getEnd().getWeatherData(0).getFirst());
+                System.out.println("windSpeed = " + edge.getEnd().getWeatherData(0).getSecond());
+                edge.setWeight(calculateEdgeWeight(edge));
+                System.out.println("time = " + edge.getWeight());
+                System.out.println();
+                /************/
+
+
                 if (distances.get(v) + edge.getWeight() < distances.get(edgeEnd)) {
                     distances.replace(edgeEnd, distances.get(v) + edge.getWeight());
                     predecessors.put(edgeEnd, v);
@@ -56,5 +67,55 @@ public class Dijkstra {
         }
         return result;
     }
+
+    // test - v1
+    public double calculateEdgeWeight(Edge edge) {
+        double weight = 0.0;
+
+        double windDirection = edge.getEnd().getWeatherData(0).getFirst();
+        double windSpeed = edge.getEnd().getWeatherData(0).getSecond();
+
+        double edgeLength = edge.getEdgeLength() * 111;     // [km]
+        int alpha = edge.getAlpha();
+        int indexWindDirection = windDirectionToIndex(windDirection);
+        double roundedWindSpeed = round(windSpeed);
+
+        double jachtSpeed = delphia47.delphia47.get(roundedWindSpeed)[indexWindDirection];
+//        System.out.println("jacht speed = " + jachtSpeed);
+
+        weight = edgeLength / jachtSpeed;
+//        System.out.println("time = " + weight);
+
+        return weight;
+    }
+
+
+    public double round(double numberToRound) {
+        Double[] numbers = delphia47.delphia47.keySet().toArray(new Double[0]);
+        double d1;
+        double d2;
+
+        for (int i = 0; i < numbers.length - 1; i++) {
+            d1 = Math.abs(numberToRound - numbers[i]);
+            d2 = Math.abs(numberToRound - numbers[i + 1]);
+
+            if (d1 < d2) {
+                return numbers[i];
+            }
+        }
+        return numbers[numbers.length - 1];
+    }
+
+    // w przyszłości dodać alfę i policzyć różnicę między kątami - bo łódka nie zawsze płynie na północ :(
+    public int windDirectionToIndex(double windDirection) {
+        double windDirection2 = windDirection;
+
+        if (windDirection2 > 180) {      //bo wiatr z lewej i z prawej burty działa tak samo
+            windDirection2 = 360 - windDirection2;
+        }
+
+        return (int) Math.round(windDirection2 / 30.0);
+    }
+
 
 }

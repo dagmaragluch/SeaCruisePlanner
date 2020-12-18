@@ -15,14 +15,18 @@ public class Main {
         System.out.println("FINAL GRAPH:");
         main.graphCreator.GRAPH.printGraphByIndexes();
 
-//        System.out.println("\n Data from API:");
-//        main.handlingAPI.fetchData(main.graphCreator.allVertices);
+        System.out.println("\n Data from API:\n");
+        main.handlingAPI.fetchData(main.graphCreator.GRAPH.getAllVertices());
+        System.out.println("end fetching data from API:\n");
 
 
         start = main.graphCreator.A;
         Graph graph = main.graphCreator.GRAPH;
         dijkstra = new Dijkstra(graph);
         runDijkstra();
+
+        Delphia47 delphia47 = new Delphia47();
+//        System.out.println("test = " + delphia47.delphia47.get(12.0)[3]);
     }
 
 

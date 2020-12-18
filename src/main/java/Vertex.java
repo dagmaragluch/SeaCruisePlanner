@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class Vertex {
         this.x = x;
         this.y = y;
         this.index = index;
-        this.weatherData = new LinkedList<Tuple<Double, Double>>();
+        this.weatherData = new ArrayList<Tuple<Double, Double>>();
     }
 
 
@@ -43,6 +44,10 @@ public class Vertex {
 
     public List<Tuple<Double, Double>> getWeatherData() {
         return weatherData;
+    }
+
+    public Tuple<Double, Double> getWeatherData(int hour) {
+        return weatherData.get(hour);
     }
 
     public void addWeatherData(Tuple<Double, Double> hourlyData) {
