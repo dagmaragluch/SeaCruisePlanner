@@ -72,7 +72,7 @@ public class Dijkstra {
     public double calculateEdgeWeight(Edge edge) {
         double weight = 0.0;
 
-        double windDirection = edge.getEnd().getWeatherData(0).getFirst();
+        int windDirection = edge.getEnd().getWeatherData(0).getFirst();
         double windSpeed = edge.getEnd().getWeatherData(0).getSecond();
 
         double edgeLength = edge.getEdgeLength() * 111;     // [km]

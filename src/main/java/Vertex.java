@@ -7,14 +7,14 @@ public class Vertex {
     private double x;   //latitude
     private double y;   //longitude
     private int index; //index of vertex
-    private List<Tuple<Double, Double>> weatherData;  //list of weather data for point
+    private List<Tuple<Integer, Double>> weatherData;  //list of weather data for point
 
 
     public Vertex(double x, double y, int index) {
         this.x = x;
         this.y = y;
         this.index = index;
-        this.weatherData = new ArrayList<Tuple<Double, Double>>();
+        this.weatherData = new ArrayList<Tuple<Integer, Double>>();
     }
 
 
@@ -42,15 +42,15 @@ public class Vertex {
         this.index = index;
     }
 
-    public List<Tuple<Double, Double>> getWeatherData() {
+    public List<Tuple<Integer, Double>> getWeatherData() {
         return weatherData;
     }
 
-    public Tuple<Double, Double> getWeatherData(int hour) {
+    public Tuple<Integer, Double> getWeatherData(int hour) {
         return weatherData.get(hour);
     }
 
-    public void addWeatherData(Tuple<Double, Double> hourlyData) {
+    public void addWeatherData(Tuple<Integer, Double> hourlyData) {
         this.weatherData.add(hourlyData);
     }
 

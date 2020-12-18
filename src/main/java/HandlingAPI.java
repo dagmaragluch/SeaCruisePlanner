@@ -73,7 +73,7 @@ public class HandlingAPI {
                 json3 = json2.get(i).getAsJsonObject();
                 HourlyData hourlyData = gson.fromJson(json3, HourlyData.class);
 
-                Tuple<Double, Double> dataTuple = new Tuple(hourlyData.getWindDirection().get("sg"), hourlyData.getWindSpeed().get("sg"));
+                Tuple<Integer, Double> dataTuple = new Tuple(hourlyData.getWindDirection().get("sg"), hourlyData.getWindSpeed().get("sg"));
                 v.addWeatherData(dataTuple);
             }
 
