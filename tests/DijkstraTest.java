@@ -20,17 +20,17 @@ public class DijkstraTest {
 
 
     @Test
-    public void quantizeWindSpeedTest(){
-        Assert.assertEquals(3.0, dijkstra.quantizeWindSpeed(2.3), 0.0);
-        Assert.assertEquals(6.0, dijkstra.quantizeWindSpeed(4.6), 0.0);
-        Assert.assertEquals(12.0, dijkstra.quantizeWindSpeed(13.2), 0.0);
-        Assert.assertEquals(20.0, dijkstra.quantizeWindSpeed(19.7), 0.0);
-        Assert.assertEquals(20.0, dijkstra.quantizeWindSpeed(25.0), 0.0);
+    public void quantizeWindSpeedTest() {
+        Assert.assertEquals(3.0, dijkstra.quantizeWindSpeed(dijkstra.KNOTS_TO_METERS_PER_SECOND * 2.3), 0.0);
+        Assert.assertEquals(6.0, dijkstra.quantizeWindSpeed(dijkstra.KNOTS_TO_METERS_PER_SECOND * 4.6), 0.0);
+        Assert.assertEquals(12.0, dijkstra.quantizeWindSpeed(dijkstra.KNOTS_TO_METERS_PER_SECOND * 13.2), 0.0);
+        Assert.assertEquals(20.0, dijkstra.quantizeWindSpeed(dijkstra.KNOTS_TO_METERS_PER_SECOND * 19.7), 0.0);
+        Assert.assertEquals(20.0, dijkstra.quantizeWindSpeed(dijkstra.KNOTS_TO_METERS_PER_SECOND * 25.0), 0.0);
     }
 
 
     @Test
-    public void calculateAngleTest(){
+    public void calculateAngleTest() {
         Assert.assertEquals(0, dijkstra.calculateAngle(90, 90));
         Assert.assertEquals(180, dijkstra.calculateAngle(90, 270));
         Assert.assertEquals(180, dijkstra.calculateAngle(270, 90));
@@ -42,7 +42,7 @@ public class DijkstraTest {
 
 
     @Test
-    public void windDirectionToIndexTest(){
+    public void windDirectionToIndexTest() {
         Assert.assertEquals(0, dijkstra.windDirectionToIndex(90, 90));
         Assert.assertEquals(1, dijkstra.windDirectionToIndex(90, 120));
         Assert.assertEquals(6, dijkstra.windDirectionToIndex(90, 270));

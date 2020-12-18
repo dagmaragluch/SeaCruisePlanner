@@ -30,19 +30,19 @@ public class Dijkstra {
 
         while (!queue.empty()) {
             Vertex v = queue.pop();
-//            System.out.println(v);
+
             if (distances.get(v).equals(Double.MAX_VALUE - 1))
                 break;
 
             for (Edge edge : graph.getGraph().get(v)) {
-                var edgeEnd = edge.getEnd();
+                Vertex edgeEnd = edge.getEnd();
 
+                double timeFromStar = distances.get(v);     //distance (time) from start vertex
+                edge.setWeight(calculateEdgeWeight(edge, timeFromStar));
+//                System.out.println(edge.toString());
 
-                edge.setWeight(calculateEdgeWeight(edge));
-
-
-                if (distances.get(v) + edge.getWeight() < distances.get(edgeEnd)) {
-                    distances.replace(edgeEnd, distances.get(v) + edge.getWeight());
+                if (timeFromStar + edge.getWeight() < distances.get(edgeEnd)) {
+                    distances.replace(edgeEnd, timeFromStar + edge.getWeight());
                     predecessors.put(edgeEnd, v);
                     queue.priority(edgeEnd, distances.get(edgeEnd));
                 }
@@ -68,12 +68,14 @@ public class Dijkstra {
         return result;
     }
 
-    // test - v1
-    public double calculateEdgeWeight(Edge edge) {
+
+    public double calculateEdgeWeight(Edge edge, double actualTimeToPoint) {
         double weight;
 
-        int windDirection = edge.getEnd().getWeatherData(0).getFirst();
-        double windSpeed = edge.getEnd().getWeatherData(0).getSecond();
+        int actualTimePeriod = (int) Math.round(actualTimeToPoint);
+
+        int windDirection = edge.getEnd().getWeatherData(actualTimePeriod).getFirst();
+        double windSpeed = edge.getEnd().getWeatherData(actualTimePeriod).getSecond();
 
         double edgeLength = edge.getEdgeLength() * DECIMAL_DEGREE_TO_KILOMETER * KILOMETER_TO_NAUTICAL_MILE;   // [NM]
         int alpha = edge.getAlpha();
@@ -85,18 +87,8 @@ public class Dijkstra {
         if (yachtSpeed != 0.0) {
             weight = edgeLength / yachtSpeed;
         } else {
-            weight = Double.MAX_VALUE;
+            weight = Double.MAX_VALUE - 1;
         }
-
-//        System.out.println("windDirection org. = " + windDirection + " [st.]");
-//        System.out.println("windSpeed org.= " + windSpeed + " [m/s]");
-//        System.out.println("indexWindDirection = " + indexWindDirection + " [st.]");
-//        System.out.println("roundedWindSpeed = " + roundedWindSpeed + " [kn]");
-//        System.out.println("alpha = " + alpha + " [st.]");
-//        System.out.println("length = " + edgeLength + " [nm]");
-//        System.out.println("yacht speed = " + yachtSpeed + " [kn]");
-//        System.out.println("time = " + weight + " [h]");
-//        System.out.println();
 
         return weight;
     }

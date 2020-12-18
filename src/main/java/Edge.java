@@ -50,7 +50,10 @@ public class Edge {
 
     @Override
     public String toString() {
-        return String.format("%s -(%.2f)-> %s", start.getIndex(), weight, end.getIndex());
+        if (weight < 999999999999999999.9)
+            return String.format("%s -(%.2f)-> %s", start.getIndex(), weight, end.getIndex());
+        else
+            return String.format("%s -(infinity)-> %s", start.getIndex(), end.getIndex());
     }
 
 //    @Override
