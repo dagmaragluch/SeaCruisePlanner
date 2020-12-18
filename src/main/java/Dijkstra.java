@@ -3,6 +3,11 @@ import java.util.*;
 public class Dijkstra {
     private Graph graph;
     Delphia47 delphia47 = new Delphia47();
+    final double METERS_PER_SECOND_TO_KNOTS = 1.94384449244;
+    final double KNOTS_TO_METERS_PER_SECOND = 0.51444444444;
+    final double KILOMETER_TO_NAUTICAL_MILE = 0.5399568;
+    final double NAUTICAL_MILE_TO_KILOMETER = 1.852;
+    final double DECIMAL_DEGREE_TO_KILOMETER = 111.196672;      //ale to na równiku
 
     public Dijkstra(Graph graph) {
         this.graph = graph;
@@ -32,13 +37,8 @@ public class Dijkstra {
             for (Edge edge : graph.getGraph().get(v)) {
                 var edgeEnd = edge.getEnd();
 
-                /************/
-                System.out.println("windDirection = " + edge.getEnd().getWeatherData(0).getFirst());
-                System.out.println("windSpeed = " + edge.getEnd().getWeatherData(0).getSecond());
+
                 edge.setWeight(calculateEdgeWeight(edge));
-                System.out.println("time = " + edge.getWeight());
-                System.out.println();
-                /************/
 
 
                 if (distances.get(v) + edge.getWeight() < distances.get(edgeEnd)) {
@@ -70,21 +70,33 @@ public class Dijkstra {
 
     // test - v1
     public double calculateEdgeWeight(Edge edge) {
-        double weight = 0.0;
+        double weight;
 
         int windDirection = edge.getEnd().getWeatherData(0).getFirst();
         double windSpeed = edge.getEnd().getWeatherData(0).getSecond();
 
-        double edgeLength = edge.getEdgeLength() * 111;     // [km]
+        double edgeLength = edge.getEdgeLength() * DECIMAL_DEGREE_TO_KILOMETER * KILOMETER_TO_NAUTICAL_MILE;   // [NM]
         int alpha = edge.getAlpha();
         int indexWindDirection = windDirectionToIndex(alpha, windDirection);
         double roundedWindSpeed = quantizeWindSpeed(windSpeed);
 
-        double jachtSpeed = delphia47.delphia47.get(roundedWindSpeed)[indexWindDirection];
-//        System.out.println("jacht speed = " + jachtSpeed);
+        double yachtSpeed = delphia47.delphia47.get(roundedWindSpeed)[indexWindDirection];
 
-        weight = edgeLength / jachtSpeed;
-//        System.out.println("time = " + weight);
+        if (yachtSpeed != 0.0) {
+            weight = edgeLength / yachtSpeed;
+        } else {
+            weight = Double.MAX_VALUE;
+        }
+
+//        System.out.println("windDirection org. = " + windDirection + " [st.]");
+//        System.out.println("windSpeed org.= " + windSpeed + " [m/s]");
+//        System.out.println("indexWindDirection = " + indexWindDirection + " [st.]");
+//        System.out.println("roundedWindSpeed = " + roundedWindSpeed + " [kn]");
+//        System.out.println("alpha = " + alpha + " [st.]");
+//        System.out.println("length = " + edgeLength + " [nm]");
+//        System.out.println("yacht speed = " + yachtSpeed + " [kn]");
+//        System.out.println("time = " + weight + " [h]");
+//        System.out.println();
 
         return weight;
     }
@@ -97,6 +109,9 @@ public class Dijkstra {
      * @return quantized value
      */
     public double quantizeWindSpeed(double valueToQuantize) {
+
+        valueToQuantize = valueToQuantize * METERS_PER_SECOND_TO_KNOTS;     //convert m/s to knots
+
         Double[] numbers = delphia47.delphia47.keySet().toArray(new Double[0]);
         Arrays.sort(numbers);
 
