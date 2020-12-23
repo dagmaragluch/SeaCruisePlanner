@@ -15,7 +15,7 @@ public class GraphCreator {
 
 
     Vertex A = new Vertex(latA, lngA, 0);
-    Point B = new Point(latB, lngB);
+    Vertex B = new Vertex(latB, lngB, -1);
 
 
     //final double SQRT_3 = Math.sqrt(3);
@@ -125,6 +125,8 @@ public class GraphCreator {
                 }
             }
         }
+
+        addEndPointToGraph();   //add point B to graph
     }
 
 
@@ -187,6 +189,51 @@ public class GraphCreator {
             }
         }
         return null;
+    }
+
+
+    /**
+     * add point B to graph
+     * if some vertex is close to point B (dist <= a_2) is created edge from this vertex to B,
+     * length of this edge is equals to dist, alpha is calculated;
+     * in point B doesn't start any edge (B is end point), but B is normal add to graph
+     * (because is needed get weather data for point B)
+     */
+    public void addEndPointToGraph() {
+        double dist;
+        for (Vertex v : GRAPH.getAllVertices()) {
+            dist = Math.sqrt((B.getX() - v.getX()) * (B.getX() - v.getX()) + (B.getY() - v.getY()) * (B.getY() - v.getY()));
+            if (dist <= a_2) {
+                int alpha = calculateEdgeAlpha(v, B);
+                Edge edge = new Edge(v, B, alpha, dist);
+                addEdgeToAdjacencyList(v, B, edge);
+            }
+        }
+        B.setIndex(GRAPH.getVerticesCount());
+        GRAPH.getAllVertices().add(B);
+
+        List<Edge> edges = new ArrayList<>();
+        graph.put(B, edges);
+    }
+
+    /**
+     * calculate angle between Oy and PQ - yacht course (relative to the north)
+     *
+     * @param p - start vertex
+     * @param q - end vertex B
+     * @return
+     */
+    public int calculateEdgeAlpha(Vertex p, Vertex q) {
+        double alpha;
+        double a = (q.getY() - p.getY()) / (q.getX() - p.getX());  //współczynnik kierunkowy prostej pq
+        double phi = Math.toDegrees(Math.atan(a));  //ponieważ a = tg phi, to phi = arctg(a), ale jest on liczony w radianach i trzeba zamienić jeszcze na stopnie
+
+        if (p.getX() <= q.getX()) {     // kursy 0-180
+            alpha = 90.0 - phi;
+        } else {                        // kursy 180+
+            alpha = 180.0 + 90.0 - phi;
+        }
+        return (int) Math.round(alpha / 30) * 30;
     }
 
 
