@@ -7,14 +7,13 @@ import java.util.Map;
 public class PolarPlotReader {
 
     public static void main(String[] args) {
-        PolarPlotReader plotReader = new PolarPlotReader();
         String csvFile = "src/main/resources/delphia47.csv";
 //        String csvFile = "src/main/resources/bavaria40_cruiser.csv";
-        Map<Double, Double[]> map = plotReader.readCSVFile(csvFile);
+        Map<Double, Double[]> map = readCSVFile(csvFile);
 
     }
 
-    public Map<Double, Double[]> readCSVFile(String csvFile) {
+    public static Map<Double, Double[]> readCSVFile(String csvFile) {
 
         BufferedReader br = null;
         String line;

@@ -2,7 +2,11 @@ import java.util.*;
 
 public class Dijkstra {
     private Graph graph;
-    Delphia47 delphia47 = new Delphia47();
+
+    String yachtModel = "src/main/resources/delphia47.csv";
+//    String yachtModel = "src/main/resources/bavaria40_cruiser.csv";
+    Map<Double, Double[]> yachtModelData = PolarPlotReader.readCSVFile(yachtModel);
+
     final double METERS_PER_SECOND_TO_KNOTS = 1.94384449244;
     final double KNOTS_TO_METERS_PER_SECOND = 0.51444444444;
     final double KILOMETER_TO_NAUTICAL_MILE = 0.5399568;
@@ -82,7 +86,7 @@ public class Dijkstra {
         int indexWindDirection = windDirectionToIndex(alpha, windDirection);
         double roundedWindSpeed = quantizeWindSpeed(windSpeed);
 
-        double yachtSpeed = delphia47.delphia47.get(roundedWindSpeed)[indexWindDirection];
+        double yachtSpeed = yachtModelData.get(roundedWindSpeed)[indexWindDirection];
 
         if (yachtSpeed != 0.0) {
             weight = edgeLength / yachtSpeed;
@@ -104,7 +108,7 @@ public class Dijkstra {
 
         valueToQuantize = valueToQuantize * METERS_PER_SECOND_TO_KNOTS;     //convert m/s to knots
 
-        Double[] numbers = delphia47.delphia47.keySet().toArray(new Double[0]);
+        Double[] numbers = yachtModelData.keySet().toArray(new Double[0]);
         Arrays.sort(numbers);
 
         double d1;
