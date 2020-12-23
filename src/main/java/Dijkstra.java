@@ -39,7 +39,7 @@ public class Dijkstra {
 
                 double timeFromStar = distances.get(v);     //distance (time) from start vertex
                 edge.setWeight(calculateEdgeWeight(edge, timeFromStar));
-//                System.out.println(edge.toString());
+                System.out.println(edge.toString());
 
                 if (timeFromStar + edge.getWeight() < distances.get(edgeEnd)) {
                     distances.replace(edgeEnd, timeFromStar + edge.getWeight());
@@ -132,8 +132,8 @@ public class Dijkstra {
 
 
     /**
-     * @param alpha         - kąt pod jakim płynie jacht względem północy (kąt odchylenia kraqwędzi grafu) - 0 ° oznacza jacht płynący na północ
-     * @param windDirection - kąt pod jakim wieje wiatr względem północy (0 ° oznacza wiatr wiejący z północy)
+     * @param alpha         - kąt pod jakim płynie jacht względem północy (kąt odchylenia kraqwędzi grafu) - 0° oznacza jacht płynący na północ
+     * @param windDirection - kąt pod jakim wieje wiatr względem północy (0° oznacza wiatr wiejący z północy)
      * @return realAngle - rzeczywisty kąt, pod jakim wiatr działa na jacht
      */
     public int calculateAngle(int alpha, int windDirection) {
