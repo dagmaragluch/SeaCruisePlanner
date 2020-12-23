@@ -4,7 +4,7 @@ public class Dijkstra {
     private Graph graph;
 
     String yachtModel = "src/main/resources/delphia47.csv";
-//    String yachtModel = "src/main/resources/bavaria40_cruiser.csv";
+    //    String yachtModel = "src/main/resources/bavaria40_cruiser.csv";
     Map<Double, Double[]> yachtModelData = PolarPlotReader.readCSVFile(yachtModel);
 
     final double METERS_PER_SECOND_TO_KNOTS = 1.94384449244;
@@ -128,24 +128,28 @@ public class Dijkstra {
     public int windDirectionToIndex(int alpha, int windDirection) {
         int realWindDirection = calculateAngle(alpha, windDirection);
 
-        if (realWindDirection > 180) {      //bo wiatr z lewej i z prawej burty działa tak samo
-            realWindDirection = 360 - realWindDirection;
-        }
         return (int) Math.round(realWindDirection / 30.0);
     }
 
 
     /**
+     * //bo wiatr z lewej i z prawej burty działa tak samo
+     *
      * @param alpha         - kąt pod jakim płynie jacht względem północy (kąt odchylenia kraqwędzi grafu) - 0° oznacza jacht płynący na północ
      * @param windDirection - kąt pod jakim wieje wiatr względem północy (0° oznacza wiatr wiejący z północy)
      * @return realAngle - rzeczywisty kąt, pod jakim wiatr działa na jacht
      */
     public int calculateAngle(int alpha, int windDirection) {
-        if (alpha <= windDirection) {
-            return windDirection - alpha;
+
+        int diff = Math.abs(alpha - windDirection);
+
+        if (diff <= 180) {
+            return diff;
         } else {
-            return 360 - alpha + windDirection;
+            return diff - 180;
         }
+
+
     }
 
 }

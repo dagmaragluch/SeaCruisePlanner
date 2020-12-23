@@ -34,9 +34,9 @@ public class DijkstraTest {
         Assert.assertEquals(0, dijkstra.calculateAngle(90, 90));
         Assert.assertEquals(180, dijkstra.calculateAngle(90, 270));
         Assert.assertEquals(180, dijkstra.calculateAngle(270, 90));
-        Assert.assertEquals(270, dijkstra.calculateAngle(0, 270));
+        Assert.assertEquals(90, dijkstra.calculateAngle(0, 270));
         Assert.assertEquals(30, dijkstra.calculateAngle(90, 120));
-        Assert.assertEquals(330, dijkstra.calculateAngle(180, 150));
+        Assert.assertEquals(30, dijkstra.calculateAngle(180, 150));
         Assert.assertEquals(30, dijkstra.calculateAngle(180, 210));
     }
 
