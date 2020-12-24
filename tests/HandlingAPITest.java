@@ -155,7 +155,7 @@ public class HandlingAPITest {
     }
 
     @Test
-    public void isWaterTest() throws IOException {
+    public void isWaterTest(){
         Assert.assertTrue(handlingAPI.isWater(new Vertex(55.538211, 18.564577, 0)));   //środek morza
         Assert.assertTrue(handlingAPI.isWater(new Vertex(59.142490, 19.893503, 0)));   //środek morza
         Assert.assertFalse(handlingAPI.isWater(new Vertex(57.095377, 22.083268, 0)));  // Łotwa

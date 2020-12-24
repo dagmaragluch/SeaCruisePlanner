@@ -6,10 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 public class HandlingAPI {
 
@@ -81,28 +78,32 @@ public class HandlingAPI {
     }
 
 
-    public String getElevationResponse(double lat, double lng) throws IOException {
+    public String getElevationResponse(double lat, double lng) {
         String responseBody;
         Map<String, String> parameters = new HashMap<>();
+        InputStream response = null;
 
-        String url = "https://api.stormglass.io/v2/elevation/point";
-        parameters.put("lat", Double.toString(lat));
-        parameters.put("lng", Double.toString(lng));
+        try {
+            String url = "https://api.stormglass.io/v2/elevation/point";
+            parameters.put("lat", Double.toString(lat));
+            parameters.put("lng", Double.toString(lng));
 
-        String query = getParamsString(parameters);
-        URLConnection connection = new URL(url + "?" + query).openConnection();
-        connection.setRequestProperty("Authorization", "ec4e364e-1b88-11eb-a5cd-0242ac130002-ec4e36c6-1b88-11eb-a5cd-0242ac130002");
-        InputStream response = connection.getInputStream();
-
-        try (Scanner scanner = new Scanner(response)) {
+            String query = getParamsString(parameters);
+            URLConnection connection = new URL(url + "?" + query).openConnection();
+            connection.setRequestProperty("Authorization", "ec4e364e-1b88-11eb-a5cd-0242ac130002-ec4e36c6-1b88-11eb-a5cd-0242ac130002");
+            response = connection.getInputStream();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        try (Scanner scanner = new Scanner(Objects.requireNonNull(response))) {
             responseBody = scanner.useDelimiter("\\A").next();
-            System.out.print(responseBody);
+//            System.out.print(responseBody);
         }
         return responseBody;
     }
 
 
-    public double getElevationFromJSON(Vertex v) throws IOException {
+    public double getElevationFromJSON(Vertex v) {
         String responseString = getElevationResponse(v.getX(), v.getY());
         JsonObject json1 = new JsonParser().parse(responseString).getAsJsonObject();
         JsonObject json2 = json1.get("data").getAsJsonObject();
@@ -112,7 +113,7 @@ public class HandlingAPI {
     }
 
 
-    public boolean isWater(Vertex v) throws IOException {
+    public boolean isWater(Vertex v) {
         double elevation = getElevationFromJSON(v);
         return elevation < 0;
     }
