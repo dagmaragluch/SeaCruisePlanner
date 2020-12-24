@@ -3,6 +3,12 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
 public class HandlingAPITest {
 
@@ -45,22 +51,6 @@ public class HandlingAPITest {
                 "start": "2020-12-11 00:00"
               }
             }""";
-
-
-    @Test
-    public void handlerTest() {
-        try {
-            String json = handlingAPI.getResponse(53.94, 14.28);
-            GsonBuilder builder = new GsonBuilder();
-            builder.setPrettyPrinting();
-
-            Gson gson = builder.create();
-            System.out.println(json);
-            System.out.println(gson);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
 
     @Test
@@ -116,9 +106,9 @@ public class HandlingAPITest {
 
 
     @Test
-    public void finalTest(){
+    public void finalTest() {
         try {
-            String responseString = handlingAPI.getResponse(53.94, 14.28);
+            String responseString = handlingAPI.getWeatherResponse(53.94, 14.28);
             JsonObject json1 = new JsonParser().parse(responseString).getAsJsonObject();
             JsonArray json2 = json1.get("hours").getAsJsonArray();
 
@@ -128,7 +118,7 @@ public class HandlingAPITest {
             JsonObject json3;
 
 
-            for (int i = 0; i < json2.size(); i++){
+            for (int i = 0; i < json2.size(); i++) {
                 json3 = json2.get(i).getAsJsonObject();
                 HourlyData hourlyData = gson.fromJson(json3, HourlyData.class);
 
@@ -141,5 +131,39 @@ public class HandlingAPITest {
         }
     }
 
+
+    @Test
+    public void elevationTest() throws IOException {
+        double lat = 59.142490;
+        double lng = 19.893503;
+
+        String responseBody;
+        Map<String, String> parameters = new HashMap<>();
+        String url = "https://api.stormglass.io/v2/elevation/point";
+        parameters.put("lat", Double.toString(lat));
+        parameters.put("lng", Double.toString(lng));
+
+        String query = handlingAPI.getParamsString(parameters);
+        URLConnection connection = new URL(url + "?" + query).openConnection();
+        connection.setRequestProperty("Authorization", "ec4e364e-1b88-11eb-a5cd-0242ac130002-ec4e36c6-1b88-11eb-a5cd-0242ac130002");
+        InputStream response = connection.getInputStream();
+
+        try (Scanner scanner = new Scanner(response)) {
+            responseBody = scanner.useDelimiter("\\A").next();
+            System.out.print(responseBody);
+        }
+    }
+
+    @Test
+    public void isWaterTest() throws IOException {
+        Assert.assertTrue(handlingAPI.isWater(new Vertex(55.538211, 18.564577, 0)));   //środek morza
+        Assert.assertTrue(handlingAPI.isWater(new Vertex(59.142490, 19.893503, 0)));   //środek morza
+        Assert.assertFalse(handlingAPI.isWater(new Vertex(57.095377, 22.083268, 0)));  // Łotwa
+        Assert.assertFalse(handlingAPI.isWater(new Vertex(57.422124, 18.475312, 0)));  // Gotlandia
+        Assert.assertFalse(handlingAPI.isWater(new Vertex(55.088007, 14.946312, 0)));  // Borholm
+        Assert.assertFalse(handlingAPI.isWater(new Vertex(56.552772, 16.519914, 0)));  // okolice Kalmaru, Szwecja
+        Assert.assertFalse(handlingAPI.isWater(new Vertex(60.166997, 19.740839, 0)));  // Wyspy Alandzkie
+        Assert.assertFalse(handlingAPI.isWater(new Vertex(58.412767, 22.361481, 0)));  // Sarema, Estonia
+    }
 
 }

@@ -19,7 +19,7 @@ public class HandlingAPI {
         }
     }
 
-    public String getResponse(double lat, double lng) throws IOException {
+    public String getWeatherResponse(double lat, double lng) throws IOException {
         String responseBody;
         String url = "https://api.stormglass.io/v2/weather/point";
         Map<String, String> parameters = new HashMap<>();
@@ -35,7 +35,6 @@ public class HandlingAPI {
 
         try (Scanner scanner = new Scanner(response)) {
             responseBody = scanner.useDelimiter("\\A").next();
-//            System.out.print(responseBody);
         }
         return responseBody;
     }
@@ -57,9 +56,9 @@ public class HandlingAPI {
                 : resultString;
     }
 
-    public void convertJSON(Vertex v){
+    public void convertJSON(Vertex v) {
         try {
-            String responseString = getResponse(v.getX(), v.getY());
+            String responseString = getWeatherResponse(v.getX(), v.getY());
             JsonObject json1 = new JsonParser().parse(responseString).getAsJsonObject();
             JsonArray json2 = json1.get("hours").getAsJsonArray();
 
@@ -68,8 +67,7 @@ public class HandlingAPI {
             Gson gson = builder.create();
             JsonObject json3;
 
-
-            for (int i = 0; i < json2.size(); i++){
+            for (int i = 0; i < json2.size(); i++) {
                 json3 = json2.get(i).getAsJsonObject();
                 HourlyData hourlyData = gson.fromJson(json3, HourlyData.class);
 
@@ -80,6 +78,43 @@ public class HandlingAPI {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public String getElevationResponse(double lat, double lng) throws IOException {
+        String responseBody;
+        Map<String, String> parameters = new HashMap<>();
+
+        String url = "https://api.stormglass.io/v2/elevation/point";
+        parameters.put("lat", Double.toString(lat));
+        parameters.put("lng", Double.toString(lng));
+
+        String query = getParamsString(parameters);
+        URLConnection connection = new URL(url + "?" + query).openConnection();
+        connection.setRequestProperty("Authorization", "ec4e364e-1b88-11eb-a5cd-0242ac130002-ec4e36c6-1b88-11eb-a5cd-0242ac130002");
+        InputStream response = connection.getInputStream();
+
+        try (Scanner scanner = new Scanner(response)) {
+            responseBody = scanner.useDelimiter("\\A").next();
+            System.out.print(responseBody);
+        }
+        return responseBody;
+    }
+
+
+    public double getElevationFromJSON(Vertex v) throws IOException {
+        String responseString = getElevationResponse(v.getX(), v.getY());
+        JsonObject json1 = new JsonParser().parse(responseString).getAsJsonObject();
+        JsonObject json2 = json1.get("data").getAsJsonObject();
+        String elevation = json2.get("elevation").getAsString();
+
+        return Double.parseDouble(elevation);
+    }
+
+
+    public boolean isWater(Vertex v) throws IOException {
+        double elevation = getElevationFromJSON(v);
+        return elevation < 0;
     }
 
 
