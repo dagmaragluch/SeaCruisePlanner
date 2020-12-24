@@ -35,6 +35,8 @@ public class GraphCreator {
     Vector[] vectors = new Vector[12];
     Point[] areaBoundary = createArea();
 
+    HandlingAPI handlingAPI = new HandlingAPI();
+
 
     public Vector[] fillVectorsArray() {
         vectors[0] = new Vector(0.0, H, H);
@@ -108,19 +110,21 @@ public class GraphCreator {
                                 currentPoint.getY() + vectors[i].getY(), -1);
 
                 if (areaContains(currentNeighbour)) {    //jeśli punkt nalezy do area
-                    Edge newEdge;
-                    Vertex alreadyFoundVertex = isPointInVertices(currentNeighbour); // vertex, witch we already found in allVertices
+                    if (handlingAPI.isWater(currentNeighbour)) {    //jeśli punkt jest morzem
+                        Edge newEdge;
+                        Vertex alreadyFoundVertex = isPointInVertices(currentNeighbour); // vertex, witch we already found in allVertices
 
-                    if (alreadyFoundVertex == null) {      // point nie ma jeszcze w zbiorze wierzchołków
-                        newEdge = new Edge(currentPoint, currentNeighbour, i * 30, vectors[i].getLength());
+                        if (alreadyFoundVertex == null) {      // point nie ma jeszcze w zbiorze wierzchołków
+                            newEdge = new Edge(currentPoint, currentNeighbour, i * 30, vectors[i].getLength());
 
-                        addNewVertex(currentNeighbour, pointsToCheck);
-                        addEdgeToAdjacencyList(currentPoint, currentNeighbour, newEdge);
+                            addNewVertex(currentNeighbour, pointsToCheck);
+                            addEdgeToAdjacencyList(currentPoint, currentNeighbour, newEdge);
 
 
-                    } else {                                //point jest już w zbiorze wierzchołków
-                        newEdge = new Edge(currentPoint, alreadyFoundVertex, i * 30, vectors[i].getLength());
-                        addEdgeToAdjacencyList(currentPoint, alreadyFoundVertex, newEdge);
+                        } else {                                //point jest już w zbiorze wierzchołków
+                            newEdge = new Edge(currentPoint, alreadyFoundVertex, i * 30, vectors[i].getLength());
+                            addEdgeToAdjacencyList(currentPoint, alreadyFoundVertex, newEdge);
+                        }
                     }
                 }
             }
