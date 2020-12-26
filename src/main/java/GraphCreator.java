@@ -7,6 +7,9 @@ public class GraphCreator {
     double latB = 55.09;    //B - Borholm
     double lngB = 14.69;    // odl. - ok. 135 km
 
+//    double latB = 60.053;
+//    double lngB = 24.92;        //406 pkt
+
     //to test
 //    double latA = 10.0;
 //    double lngA = 15.0;
@@ -110,21 +113,21 @@ public class GraphCreator {
                                 currentPoint.getY() + vectors[i].getY(), -1);
 
                 if (areaContains(currentNeighbour)) {    //jeśli punkt nalezy do area
-                    if (handlingAPI.isWater(currentNeighbour)) {    //jeśli punkt jest morzem
-                        Edge newEdge;
-                        Vertex alreadyFoundVertex = isPointInVertices(currentNeighbour); // vertex, witch we already found in allVertices
+                    Edge newEdge;
+                    Vertex alreadyFoundVertex = isPointInVertices(currentNeighbour); // vertex, witch we already found in allVertices
 
-                        if (alreadyFoundVertex == null) {      // point nie ma jeszcze w zbiorze wierzchołków
+                    if (alreadyFoundVertex == null) {      // point nie ma jeszcze w zbiorze wierzchołków
+                        if (handlingAPI.isWater(currentNeighbour)) {    //jeśli punkt jest morzem
+
                             newEdge = new Edge(currentPoint, currentNeighbour, i * 30, vectors[i].getLength());
 
                             addNewVertex(currentNeighbour, pointsToCheck);
                             addEdgeToAdjacencyList(currentPoint, currentNeighbour, newEdge);
-
-
-                        } else {                                //point jest już w zbiorze wierzchołków
-                            newEdge = new Edge(currentPoint, alreadyFoundVertex, i * 30, vectors[i].getLength());
-                            addEdgeToAdjacencyList(currentPoint, alreadyFoundVertex, newEdge);
                         }
+
+                    } else {                                //point jest już w zbiorze wierzchołków
+                        newEdge = new Edge(currentPoint, alreadyFoundVertex, i * 30, vectors[i].getLength());
+                        addEdgeToAdjacencyList(currentPoint, alreadyFoundVertex, newEdge);
                     }
                 }
             }
@@ -225,7 +228,7 @@ public class GraphCreator {
      *
      * @param p - start vertex
      * @param q - end vertex B
-     * @return
+     * @return alpha - yacht course in degrees and quantize to 30k
      */
     public int calculateEdgeAlpha(Vertex p, Vertex q) {
         double alpha;
