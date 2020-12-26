@@ -6,23 +6,33 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class HandlingAPI {
 
     public void fetchData(Set<Vertex> vertices) {     //w przyszłość dodać jeszcze datę
         for (Vertex v : vertices) {
-            convertJSON(v);
+            getWeatherFromJSON(v, null);
         }
     }
 
-    public String getWeatherResponse(double lat, double lng) throws IOException {
+    public void fetchData(Set<Vertex> vertices, String date) {     //w przyszłość dodać jeszcze datę
+        for (Vertex v : vertices) {
+            getWeatherFromJSON(v, date);
+        }
+    }
+
+    public String getWeatherResponse(double lat, double lng, String date) throws IOException {
         String responseBody;
         String url = "https://api.stormglass.io/v2/weather/point";
         Map<String, String> parameters = new HashMap<>();
         parameters.put("lat", Double.toString(lat));
         parameters.put("lng", Double.toString(lng));
         parameters.put("params", "windSpeed,windDirection");
+        if (date != null){
+            parameters.put("start", date);
+        }
         parameters.put("source", "sg");
 
         String query = getParamsString(parameters);
@@ -41,9 +51,9 @@ public class HandlingAPI {
         StringBuilder result = new StringBuilder();
 
         for (Map.Entry<String, String> entry : params.entrySet()) {
-            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+            result.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8));
             result.append("=");
-            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+            result.append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8));
             result.append("&");
         }
 
@@ -53,9 +63,9 @@ public class HandlingAPI {
                 : resultString;
     }
 
-    public void convertJSON(Vertex v) {
+    public void getWeatherFromJSON(Vertex v, String date) {
         try {
-            String responseString = getWeatherResponse(v.getX(), v.getY());
+            String responseString = getWeatherResponse(v.getX(), v.getY(), date);
             JsonObject json1 = new JsonParser().parse(responseString).getAsJsonObject();
             JsonArray json2 = json1.get("hours").getAsJsonArray();
 
@@ -68,10 +78,9 @@ public class HandlingAPI {
                 json3 = json2.get(i).getAsJsonObject();
                 HourlyData hourlyData = gson.fromJson(json3, HourlyData.class);
 
-                Tuple<Integer, Double> dataTuple = new Tuple(hourlyData.getWindDirection().get("sg"), hourlyData.getWindSpeed().get("sg"));
+                Tuple<Integer, Double> dataTuple = new Tuple<>(hourlyData.getWindDirection().get("sg"), hourlyData.getWindSpeed().get("sg"));
                 v.addWeatherData(dataTuple);
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }

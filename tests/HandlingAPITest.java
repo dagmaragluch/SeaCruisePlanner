@@ -108,7 +108,7 @@ public class HandlingAPITest {
     @Test
     public void finalTest() {
         try {
-            String responseString = handlingAPI.getWeatherResponse(53.94, 14.28);
+            String responseString = handlingAPI.getWeatherResponse(53.94, 14.28, null);
             JsonObject json1 = new JsonParser().parse(responseString).getAsJsonObject();
             JsonArray json2 = json1.get("hours").getAsJsonArray();
 
@@ -122,7 +122,7 @@ public class HandlingAPITest {
                 json3 = json2.get(i).getAsJsonObject();
                 HourlyData hourlyData = gson.fromJson(json3, HourlyData.class);
 
-                Tuple<Double, Double> dataTuple = new Tuple(hourlyData.getWindDirection().get("sg"), hourlyData.getWindSpeed().get("sg"));
+                Tuple<Integer, Double> dataTuple = new Tuple<>(hourlyData.getWindDirection().get("sg"), hourlyData.getWindSpeed().get("sg"));
                 System.out.println(dataTuple.toString());
             }
 
@@ -155,7 +155,7 @@ public class HandlingAPITest {
     }
 
     @Test
-    public void isWaterTest(){
+    public void isWaterTest() {
         Assert.assertTrue(handlingAPI.isWater(new Vertex(55.538211, 18.564577, 0)));   //środek morza
         Assert.assertTrue(handlingAPI.isWater(new Vertex(59.142490, 19.893503, 0)));   //środek morza
         Assert.assertFalse(handlingAPI.isWater(new Vertex(57.095377, 22.083268, 0)));  // Łotwa
@@ -164,6 +164,12 @@ public class HandlingAPITest {
         Assert.assertFalse(handlingAPI.isWater(new Vertex(56.552772, 16.519914, 0)));  // okolice Kalmaru, Szwecja
         Assert.assertFalse(handlingAPI.isWater(new Vertex(60.166997, 19.740839, 0)));  // Wyspy Alandzkie
         Assert.assertFalse(handlingAPI.isWater(new Vertex(58.412767, 22.361481, 0)));  // Sarema, Estonia
+    }
+
+    @Test
+    public void dataTest() throws IOException {
+        String date = "2021-01-03T17:00:00+00:00";
+        System.out.println(handlingAPI.getWeatherResponse(55.538211, 18.564577, date));
     }
 
 }
