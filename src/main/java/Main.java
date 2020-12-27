@@ -8,7 +8,7 @@ public class Main {
 
     public static void main(String[] args) {
         Main main = new Main();
-        String date = "2021-01-04T17:00:00+00:00";
+        String date = "2021-01-10T00:00:00+00:00";
 
         System.out.println("creating graph");
         main.graphCreator.createGraph();
@@ -26,6 +26,8 @@ public class Main {
         Graph graph = main.graphCreator.GRAPH;
         dijkstra = new Dijkstra(graph);
         runDijkstra();
+
+        System.out.println("\nall vertices count = " + main.graphCreator.GRAPH.getAllVertices().size());
     }
 
 

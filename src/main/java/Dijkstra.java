@@ -78,6 +78,10 @@ public class Dijkstra {
 
         int actualTimePeriod = (int) Math.round(actualTimeToPoint);
 
+        if (actualTimePeriod >= edge.getEnd().getWeatherData().size()) {
+            actualTimePeriod = edge.getEnd().getWeatherData().size() - 1;
+        }
+
         int windDirection = edge.getEnd().getWeatherData(actualTimePeriod).getFirst();
         double windSpeed = edge.getEnd().getWeatherData(actualTimePeriod).getSecond();
 
