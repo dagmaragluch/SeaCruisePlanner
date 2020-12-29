@@ -2,52 +2,65 @@ import com.google.gson.*;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
+import java.net.*;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 public class HandlingAPI {
 
-    public void fetchData(Set<Vertex> vertices) {     //w przyszłość dodać jeszcze datę
+    public void fetchData(Set<Vertex> vertices) {
+        Map<Vertex, CompletableFuture<String>> responses = getAllResponses(vertices);
+
+        for (Map.Entry<Vertex, CompletableFuture<String>> entry : responses.entrySet()) {
+            try {
+                getWeatherFromJSON(entry.getKey(), entry.getValue().get());
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    public Map<Vertex, URI> createTargetsMap(Set<Vertex> vertices) {
+        Map<Vertex, URI> targets = new HashMap<>();
         for (Vertex v : vertices) {
-            getWeatherFromJSON(v, null);
+            targets.put(v, createURI(v));
         }
+        return targets;
     }
 
-    public void fetchData(Set<Vertex> vertices, String date) {     //w przyszłość dodać jeszcze datę
-        for (Vertex v : vertices) {
-            getWeatherFromJSON(v, date);
-        }
+    public Map<Vertex, CompletableFuture<String>> getAllResponses(Set<Vertex> vertices) {
+        Map<Vertex, URI> targets = createTargetsMap(vertices);
+
+        HttpClient client = HttpClient.newHttpClient();
+        String username = "Authorization";
+        String password = "ec4e364e-1b88-11eb-a5cd-0242ac130002-ec4e36c6-1b88-11eb-a5cd-0242ac130002";
+
+
+        Map<Vertex, CompletableFuture<String>> futures =
+                targets.entrySet()
+                        .stream()
+                        .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), client
+                                .sendAsync(
+                                        HttpRequest.newBuilder(e.getValue()).header(username, password).GET().build(),
+                                        HttpResponse.BodyHandlers.ofString())
+                                .thenApply(HttpResponse::body)))
+                        .collect(Collectors.toMap(
+                                Map.Entry::getKey,
+                                Map.Entry::getValue
+                        ));
+
+        return futures;
     }
 
-    public String getWeatherResponse(double lat, double lng, String date) throws IOException {
-        String responseBody;
-        String url = "https://api.stormglass.io/v2/weather/point";
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("lat", Double.toString(lat));
-        parameters.put("lng", Double.toString(lng));
-        parameters.put("params", "windSpeed,windDirection");
-        if (date != null){
-            parameters.put("start", date);
-        }
-        parameters.put("source", "sg");
 
-        String query = getParamsString(parameters);
-        URLConnection connection = new URL(url + "?" + query).openConnection();
-        connection.setRequestProperty("Authorization", "ec4e364e-1b88-11eb-a5cd-0242ac130002-ec4e36c6-1b88-11eb-a5cd-0242ac130002");
-        InputStream response = connection.getInputStream();
-
-        try (Scanner scanner = new Scanner(response)) {
-            responseBody = scanner.useDelimiter("\\A").next();
-        }
-        return responseBody;
-    }
-
-    public String getParamsString(Map<String, String> params)
-            throws UnsupportedEncodingException {
+    public static String getParamsString(Map<String, String> params) {
         StringBuilder result = new StringBuilder();
 
         for (Map.Entry<String, String> entry : params.entrySet()) {
@@ -63,26 +76,21 @@ public class HandlingAPI {
                 : resultString;
     }
 
-    public void getWeatherFromJSON(Vertex v, String date) {
-        try {
-            String responseString = getWeatherResponse(v.getX(), v.getY(), date);
-            JsonObject json1 = new JsonParser().parse(responseString).getAsJsonObject();
-            JsonArray json2 = json1.get("hours").getAsJsonArray();
+    public void getWeatherFromJSON(Vertex v, String responseString) {
+        JsonObject json1 = new JsonParser().parse(responseString).getAsJsonObject();
+        JsonArray json2 = json1.get("hours").getAsJsonArray();
 
-            GsonBuilder builder = new GsonBuilder();
-            builder.setPrettyPrinting().create();
-            Gson gson = builder.create();
-            JsonObject json3;
+        GsonBuilder builder = new GsonBuilder();
+        builder.setPrettyPrinting().create();
+        Gson gson = builder.create();
+        JsonObject json3;
 
-            for (int i = 0; i < json2.size(); i++) {
-                json3 = json2.get(i).getAsJsonObject();
-                HourlyData hourlyData = gson.fromJson(json3, HourlyData.class);
+        for (int i = 0; i < json2.size(); i++) {
+            json3 = json2.get(i).getAsJsonObject();
+            HourlyData hourlyData = gson.fromJson(json3, HourlyData.class);
 
-                Tuple<Integer, Double> dataTuple = new Tuple<>(hourlyData.getWindDirection().get("sg"), hourlyData.getWindSpeed().get("sg"));
-                v.addWeatherData(dataTuple);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+            Tuple<Integer, Double> dataTuple = new Tuple<>(hourlyData.getWindDirection().get("sg"), hourlyData.getWindSpeed().get("sg"));
+            v.addWeatherData(dataTuple);
         }
     }
 
@@ -125,6 +133,27 @@ public class HandlingAPI {
     public boolean isWater(Vertex v) {
         double elevation = getElevationFromJSON(v);
         return elevation < 0;
+    }
+
+    public URI createURI(Vertex v) {
+        String url = "https://api.stormglass.io/v2/weather/point";
+        URI uri = null;
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("lat", Double.toString(v.getX()));
+        parameters.put("lng", Double.toString(v.getY()));
+        parameters.put("params", "windSpeed,windDirection");
+//        if (date != null) {
+//            parameters.put("start", date);
+//        }
+        parameters.put("source", "sg");
+
+        try {
+            String query = getParamsString(parameters);
+            uri = new URI(url + "?" + query);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        return uri;
     }
 
 
