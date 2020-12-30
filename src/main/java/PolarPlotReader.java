@@ -7,8 +7,8 @@ import java.util.Map;
 public class PolarPlotReader {
 
     public static void main(String[] args) {
-        String csvFile = "src/main/resources/delphia47.csv";
-//        String csvFile = "src/main/resources/bavaria40_cruiser.csv";
+//        String csvFile = "src/main/resources/delphia47.csv";
+        String csvFile = "src/main/resources/bavaria46_cruiser.csv";
         Map<Double, Double[]> map = readCSVFile(csvFile);
 
     }
