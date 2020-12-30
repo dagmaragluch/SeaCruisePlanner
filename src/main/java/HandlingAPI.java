@@ -1,7 +1,6 @@
 import com.google.gson.*;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.*;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -30,7 +29,7 @@ public class HandlingAPI {
     public Map<Vertex, URI> createTargetsMap(Set<Vertex> vertices) {
         Map<Vertex, URI> targets = new HashMap<>();
         for (Vertex v : vertices) {
-            targets.put(v, createURI(v));
+            targets.put(v, createURI(v, true));
         }
         return targets;
     }
@@ -95,33 +94,35 @@ public class HandlingAPI {
     }
 
 
-    public String getElevationResponse(double lat, double lng) {
-        String responseBody;
-        Map<String, String> parameters = new HashMap<>();
-        InputStream response = null;
+    public String getElevationResponse(Vertex v) {
+        String username = "Authorization";
+        String password = "ec4e364e-1b88-11eb-a5cd-0242ac130002-ec4e36c6-1b88-11eb-a5cd-0242ac130002";
 
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(createURI(v, false))
+                .header(username, password)
+                .GET()
+                .build();
+
+
+        HttpClient client = HttpClient.newBuilder().build();
+
+        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body);
+
+        HttpResponse<String> response = null;
         try {
-            String url = "https://api.stormglass.io/v2/elevation/point";
-            parameters.put("lat", Double.toString(lat));
-            parameters.put("lng", Double.toString(lng));
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
 
-            String query = getParamsString(parameters);
-            URLConnection connection = new URL(url + "?" + query).openConnection();
-            connection.setRequestProperty("Authorization", "ec4e364e-1b88-11eb-a5cd-0242ac130002-ec4e36c6-1b88-11eb-a5cd-0242ac130002");
-            response = connection.getInputStream();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        try (Scanner scanner = new Scanner(Objects.requireNonNull(response))) {
-            responseBody = scanner.useDelimiter("\\A").next();
-//            System.out.print(responseBody);
-        }
-        return responseBody;
+        return Objects.requireNonNull(response).body();
     }
 
 
     public double getElevationFromJSON(Vertex v) {
-        String responseString = getElevationResponse(v.getX(), v.getY());
+        String responseString = getElevationResponse(v);
         JsonObject json1 = new JsonParser().parse(responseString).getAsJsonObject();
         JsonObject json2 = json1.get("data").getAsJsonObject();
         String elevation = json2.get("elevation").getAsString();
@@ -135,17 +136,20 @@ public class HandlingAPI {
         return elevation < 0;
     }
 
-    public URI createURI(Vertex v) {
-        String url = "https://api.stormglass.io/v2/weather/point";
+    public URI createURI(Vertex v, Boolean isWeatherURI) {
         URI uri = null;
+        String url;
         Map<String, String> parameters = new HashMap<>();
         parameters.put("lat", Double.toString(v.getX()));
         parameters.put("lng", Double.toString(v.getY()));
-        parameters.put("params", "windSpeed,windDirection");
-//        if (date != null) {
-//            parameters.put("start", date);
-//        }
-        parameters.put("source", "sg");
+
+        if (isWeatherURI) {
+            url = "https://api.stormglass.io/v2/weather/point";
+            parameters.put("params", "windSpeed,windDirection");
+            parameters.put("source", "sg");
+        } else {
+            url = "https://api.stormglass.io/v2/elevation/point";
+        }
 
         try {
             String query = getParamsString(parameters);

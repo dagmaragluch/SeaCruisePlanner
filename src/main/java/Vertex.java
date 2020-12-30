@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class Vertex {
@@ -9,12 +8,11 @@ public class Vertex {
     private int index; //index of vertex
     private List<Tuple<Integer, Double>> weatherData;  //list of weather data for point
 
-
     public Vertex(double x, double y, int index) {
         this.x = x;
         this.y = y;
         this.index = index;
-        this.weatherData = new ArrayList<Tuple<Integer, Double>>();
+        this.weatherData = new ArrayList<>();
     }
 
 
@@ -22,16 +20,8 @@ public class Vertex {
         return x;
     }
 
-    public void setX(double x) {
-        this.x = x;
-    }
-
     public double getY() {
         return y;
-    }
-
-    public void setY(double y) {
-        this.y = y;
     }
 
     public int getIndex() {

@@ -10,12 +10,6 @@ public class GraphCreator {
 //    double latB = 60.053;
 //    double lngB = 24.92;        //406 pkt
 
-    //to test
-//    double latA = 10.0;
-//    double lngA = 15.0;
-//    double latB = 10.0;
-//    double lngB = 22.0;
-
 
     Vertex A = new Vertex(latA, lngA, 0);
     Vertex B = new Vertex(latB, lngB, -1);

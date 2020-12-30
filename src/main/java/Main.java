@@ -8,7 +8,6 @@ public class Main {
 
     public static void main(String[] args) {
         Main main = new Main();
-        String date = "2021-01-10T00:00:00+00:00";
 
         System.out.println("creating graph");
         main.graphCreator.createGraph();
@@ -17,8 +16,7 @@ public class Main {
         main.graphCreator.GRAPH.printGraphByIndexes();
 
         System.out.println("\n Start fetching data from API\n");
-//        main.handlingAPI.fetchData(main.graphCreator.GRAPH.getAllVertices());
-        main.handlingAPI.fetchData(main.graphCreator.GRAPH.getAllVertices(), date);
+        main.handlingAPI.fetchData(main.graphCreator.GRAPH.getAllVertices());
         System.out.println("end fetching data from API\n");
 
 

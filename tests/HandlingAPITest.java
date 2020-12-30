@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
@@ -105,31 +106,31 @@ public class HandlingAPITest {
     }
 
 
-    @Test
-    public void finalTest() {
-        try {
-            String responseString = handlingAPI.getWeatherResponse(53.94, 14.28, null);
-            JsonObject json1 = new JsonParser().parse(responseString).getAsJsonObject();
-            JsonArray json2 = json1.get("hours").getAsJsonArray();
-
-            GsonBuilder builder = new GsonBuilder();
-            builder.setPrettyPrinting().create();
-            Gson gson = builder.create();
-            JsonObject json3;
-
-
-            for (int i = 0; i < json2.size(); i++) {
-                json3 = json2.get(i).getAsJsonObject();
-                HourlyData hourlyData = gson.fromJson(json3, HourlyData.class);
-
-                Tuple<Integer, Double> dataTuple = new Tuple<>(hourlyData.getWindDirection().get("sg"), hourlyData.getWindSpeed().get("sg"));
-                System.out.println(dataTuple.toString());
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    @Test
+//    public void finalTest() {
+//        try {
+//            String responseString = handlingAPI.getWeatherResponse(53.94, 14.28, null);
+//            JsonObject json1 = new JsonParser().parse(responseString).getAsJsonObject();
+//            JsonArray json2 = json1.get("hours").getAsJsonArray();
+//
+//            GsonBuilder builder = new GsonBuilder();
+//            builder.setPrettyPrinting().create();
+//            Gson gson = builder.create();
+//            JsonObject json3;
+//
+//
+//            for (int i = 0; i < json2.size(); i++) {
+//                json3 = json2.get(i).getAsJsonObject();
+//                HourlyData hourlyData = gson.fromJson(json3, HourlyData.class);
+//
+//                Tuple<Integer, Double> dataTuple = new Tuple<>(hourlyData.getWindDirection().get("sg"), hourlyData.getWindSpeed().get("sg"));
+//                System.out.println(dataTuple.toString());
+//            }
+//
+//        } catch (IOException | URISyntaxException | InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 
     @Test
@@ -164,12 +165,6 @@ public class HandlingAPITest {
         Assert.assertFalse(handlingAPI.isWater(new Vertex(56.552772, 16.519914, 0)));  // okolice Kalmaru, Szwecja
         Assert.assertFalse(handlingAPI.isWater(new Vertex(60.166997, 19.740839, 0)));  // Wyspy Alandzkie
         Assert.assertFalse(handlingAPI.isWater(new Vertex(58.412767, 22.361481, 0)));  // Sarema, Estonia
-    }
-
-    @Test
-    public void dataTest() throws IOException {
-        String date = "2021-01-03T17:00:00+00:00";
-        System.out.println(handlingAPI.getWeatherResponse(55.538211, 18.564577, date));
     }
 
 }
