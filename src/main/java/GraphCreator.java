@@ -2,27 +2,17 @@ import java.util.*;
 
 public class GraphCreator {
 
-    double latA = 53.94;    //A - Swinoujście
-    double lngA = 14.28;
-    double latB = 55.09;    //B - Borholm
-    double lngB = 14.69;    // odl. - ok. 135 km
-
-//    double latB = 60.053;
-//    double lngB = 24.92;        //406 pkt
-
-
-    Vertex A = new Vertex(latA, lngA, 0);
-    Vertex B = new Vertex(latB, lngB, -1);
+    Vertex A, B;
+    double latA, lngA, latB, lngB;    //B - Borhol, lngB;    // odl. - ok. 135 km
 
 
     //final double SQRT_3 = Math.sqrt(3);
     final double SQRT_3 = 1.73;
-    double a = 0.1;     // dł boku trójkąta równobocznego; w stopniach geogr. !
+    double a = 0.3;     // dł boku trójkąta równobocznego; w stopniach geogr. !
     double h = a / 2 * SQRT_3;  // wysokość w trójkącie równobocznym; też w stopniach geogr. !
     double H = a * SQRT_3;  // 2 * h; w stopniach geogr. !
     double a_2 = a * 2;
     double areaWidth = 0.5;  // w st. geo; z każdej strony jest tyle
-    //    double d = a / 2;
     double d = (2 * a) / SQRT_3;   // dokładność, z jaką wyznaczne są punkty - odległość środka trójkąta od wierzchołka
 
 
@@ -33,6 +23,17 @@ public class GraphCreator {
     Point[] areaBoundary = createArea();
 
     HandlingAPI handlingAPI = new HandlingAPI();
+
+
+    public GraphCreator(Point startPort, Point endPort) {
+        latA = startPort.getX();
+        lngA = startPort.getY();
+        latB = endPort.getX();
+        lngB = endPort.getY();
+
+        A = new Vertex(latA, lngA, 0);
+        B = new Vertex(latB, lngB, -1);
+    }
 
 
     public Vector[] fillVectorsArray() {

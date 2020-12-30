@@ -4,7 +4,9 @@ import org.junit.Test;
 
 public class DijkstraTest {
 
-    GraphCreator graphCreator = new GraphCreator();
+    Point A = new Point(53.934106, 14.274631);
+    Point B = new Point(55.093889, 14.679056);
+    GraphCreator graphCreator = new GraphCreator(A, B);
     private static Dijkstra dijkstra;
     private static Vertex start;
     Graph graph;
