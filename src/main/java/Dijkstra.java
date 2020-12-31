@@ -3,9 +3,10 @@ import java.util.*;
 public class Dijkstra {
     private Graph graph;
 
-    String yachtModel = "src/main/resources/delphia47.csv";
-    //    String yachtModel = "src/main/resources/bavaria40_cruiser.csv";
+//    String yachtModel = "src/main/resources/delphia47.csv";
+        String yachtModel = "src/main/resources/bavaria46_cruiser.csv";
     Map<Double, Double[]> yachtModelData = PolarPlotReader.readCSVFile(yachtModel);
+    int hoursFromStart = 0;
 
     final double METERS_PER_SECOND_TO_KNOTS = 1.94384449244;
     final double KNOTS_TO_METERS_PER_SECOND = 0.51444444444;
@@ -76,7 +77,7 @@ public class Dijkstra {
     public double calculateEdgeWeight(Edge edge, double actualTimeToPoint) {
         double weight;
 
-        int actualTimePeriod = (int) Math.round(actualTimeToPoint);
+        int actualTimePeriod = (int) Math.round(actualTimeToPoint) + hoursFromStart;    // dodajemy godziny do staru rejsu (rejs za 2 dni = +48h)
 
         if (actualTimePeriod >= edge.getEnd().getWeatherData().size()) {
             actualTimePeriod = edge.getEnd().getWeatherData().size() - 1;

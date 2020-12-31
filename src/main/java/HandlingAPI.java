@@ -6,6 +6,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -101,6 +103,7 @@ public class HandlingAPI {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(createURI(v, false))
                 .header(username, password)
+//                .timeout(Duration.of(100, ChronoUnit.MILLIS))
                 .GET()
                 .build();
 

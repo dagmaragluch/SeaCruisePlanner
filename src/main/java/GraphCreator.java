@@ -3,26 +3,8 @@ import java.util.*;
 public class GraphCreator {
 
     Vertex A, B;
-    double latA, lngA, latB, lngB;    //B - Borhol, lngB;    // odl. - ok. 135 km
-
-
-    //final double SQRT_3 = Math.sqrt(3);
-    final double SQRT_3 = 1.73;
-    double a = 0.3;     // dł boku trójkąta równobocznego; w stopniach geogr. !
-    double h = a / 2 * SQRT_3;  // wysokość w trójkącie równobocznym; też w stopniach geogr. !
-    double H = a * SQRT_3;  // 2 * h; w stopniach geogr. !
-    double a_2 = a * 2;
-    double areaWidth = 0.5;  // w st. geo; z każdej strony jest tyle
-    double d = (2 * a) / SQRT_3;   // dokładność, z jaką wyznaczne są punkty - odległość środka trójkąta od wierzchołka
-
-
-    Graph GRAPH = new Graph(new HashMap<>());
-    Map<Vertex, List<Edge>> graph = GRAPH.getGraph();
-
-    Vector[] vectors = new Vector[12];
-    Point[] areaBoundary = createArea();
-
-    HandlingAPI handlingAPI = new HandlingAPI();
+    double latA, lngA, latB, lngB;
+    Point[] areaBoundary;
 
 
     public GraphCreator(Point startPort, Point endPort) {
@@ -33,7 +15,27 @@ public class GraphCreator {
 
         A = new Vertex(latA, lngA, 0);
         B = new Vertex(latB, lngB, -1);
+
+        areaBoundary = createArea();
     }
+    //final double SQRT_3 = Math.sqrt(3);
+    final double SQRT_3 = 1.73;
+    double a = 0.1;     // dł boku trójkąta równobocznego; w stopniach geogr. !
+    double h = a / 2 * SQRT_3;  // wysokość w trójkącie równobocznym; też w stopniach geogr. !
+    double H = a * SQRT_3;  // 2 * h; w stopniach geogr. !
+    double a_2 = a * 2;
+    double areaWidth = 0.5;  // w st. geo; z każdej strony jest tyle
+
+    double d = (2 * a) / SQRT_3;   // dokładność, z jaką wyznaczne są punkty - odległość środka trójkąta od wierzchołka
+
+    Graph GRAPH = new Graph(new HashMap<>());
+
+    Map<Vertex, List<Edge>> graph = GRAPH.getGraph();
+    Vector[] vectors = new Vector[12];
+
+
+    HandlingAPI handlingAPI = new HandlingAPI();
+
 
 
     public Vector[] fillVectorsArray() {
