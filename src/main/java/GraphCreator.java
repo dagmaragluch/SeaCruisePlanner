@@ -18,6 +18,7 @@ public class GraphCreator {
 
         areaBoundary = createArea();
     }
+
     //final double SQRT_3 = Math.sqrt(3);
     final double SQRT_3 = 1.73;
     double a = 0.1;     // dł boku trójkąta równobocznego; w stopniach geogr. !
@@ -35,7 +36,6 @@ public class GraphCreator {
 
 
     HandlingAPI handlingAPI = new HandlingAPI();
-
 
 
     public Vector[] fillVectorsArray() {
@@ -114,17 +114,17 @@ public class GraphCreator {
                     Vertex alreadyFoundVertex = isPointInVertices(currentNeighbour); // vertex, witch we already found in allVertices
 
                     if (alreadyFoundVertex == null) {      // point nie ma jeszcze w zbiorze wierzchołków
-                        if (handlingAPI.isWater(currentNeighbour)) {    //jeśli punkt jest morzem
+//                        if (handlingAPI.isWater(currentNeighbour)) {    //jeśli punkt jest morzem
 
                             newEdge = new Edge(currentPoint, currentNeighbour, i * 30, vectors[i].getLength());
 
                             addNewVertex(currentNeighbour, pointsToCheck);
-                            addEdgeToAdjacencyList(currentPoint, currentNeighbour, newEdge);
-                        }
+                            addEdgeToAdjacencyList(newEdge);
+//                        }
 
                     } else {                                //point jest już w zbiorze wierzchołków
                         newEdge = new Edge(currentPoint, alreadyFoundVertex, i * 30, vectors[i].getLength());
-                        addEdgeToAdjacencyList(currentPoint, alreadyFoundVertex, newEdge);
+                        addEdgeToAdjacencyList(newEdge);
                     }
                 }
             }
@@ -135,15 +135,17 @@ public class GraphCreator {
 
 
     /**
-     * @param startVertex - key vertex
-     * @param neighbour   - new found vertex
-     * @param newEdge     - edge from startVertex to neighbour
+     * @param edge - edge from startVertex to neighbour
+     *             startVertex - key vertex
+     *             neighbour   - new found vertex
      */
-    public void addEdgeToAdjacencyList(Vertex startVertex, Vertex neighbour, Edge newEdge) {
+    public void addEdgeToAdjacencyList(Edge edge) {
+        Vertex startVertex = edge.getStart();
+        Vertex neighbour = edge.getEnd();
         List<Edge> edges = graph.get(startVertex);
 
         if (!isVertexAlreadyInEdgesList(neighbour, edges)) {
-            Objects.requireNonNull(graph.put(startVertex, edges)).add(newEdge);
+            Objects.requireNonNull(graph.put(startVertex, edges)).add(edge);
         }
     }
 
@@ -210,7 +212,7 @@ public class GraphCreator {
             if (dist <= a_2) {
                 int alpha = calculateEdgeAlpha(v, B);
                 Edge edge = new Edge(v, B, alpha, dist);
-                addEdgeToAdjacencyList(v, B, edge);
+                addEdgeToAdjacencyList(edge);
             }
         }
         B.setIndex(GRAPH.getVerticesCount());
