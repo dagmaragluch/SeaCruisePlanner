@@ -4,12 +4,9 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class HandlingAPITest {
 
@@ -155,16 +152,51 @@ public class HandlingAPITest {
         }
     }
 
+//    @Test
+//    public void isWaterTest() {
+//        Assert.assertTrue(handlingAPI.isWater(new Vertex(55.538211, 18.564577, 0)));   //środek morza
+//        Assert.assertTrue(handlingAPI.isWater(new Vertex(59.142490, 19.893503, 0)));   //środek morza
+//        Assert.assertFalse(handlingAPI.isWater(new Vertex(57.095377, 22.083268, 0)));  // Łotwa
+//        Assert.assertFalse(handlingAPI.isWater(new Vertex(57.422124, 18.475312, 0)));  // Gotlandia
+//        Assert.assertFalse(handlingAPI.isWater(new Vertex(55.088007, 14.946312, 0)));  // Borholm
+//        Assert.assertFalse(handlingAPI.isWater(new Vertex(56.552772, 16.519914, 0)));  // okolice Kalmaru, Szwecja
+//        Assert.assertFalse(handlingAPI.isWater(new Vertex(60.166997, 19.740839, 0)));  // Wyspy Alandzkie
+//        Assert.assertFalse(handlingAPI.isWater(new Vertex(58.412767, 22.361481, 0)));  // Sarema, Estonia
+//    }
+
+
     @Test
     public void isWaterTest() {
-        Assert.assertTrue(handlingAPI.isWater(new Vertex(55.538211, 18.564577, 0)));   //środek morza
-        Assert.assertTrue(handlingAPI.isWater(new Vertex(59.142490, 19.893503, 0)));   //środek morza
-        Assert.assertFalse(handlingAPI.isWater(new Vertex(57.095377, 22.083268, 0)));  // Łotwa
-        Assert.assertFalse(handlingAPI.isWater(new Vertex(57.422124, 18.475312, 0)));  // Gotlandia
-        Assert.assertFalse(handlingAPI.isWater(new Vertex(55.088007, 14.946312, 0)));  // Borholm
-        Assert.assertFalse(handlingAPI.isWater(new Vertex(56.552772, 16.519914, 0)));  // okolice Kalmaru, Szwecja
-        Assert.assertFalse(handlingAPI.isWater(new Vertex(60.166997, 19.740839, 0)));  // Wyspy Alandzkie
-        Assert.assertFalse(handlingAPI.isWater(new Vertex(58.412767, 22.361481, 0)));  // Sarema, Estonia
+
+        Set<Vertex> testSet = new HashSet<>();
+        Vertex v1 = new Vertex(55.538211, 18.564577, 0); //środek morza
+        Vertex v2 = new Vertex(59.142490, 19.893503, 0);   //środek morza
+        Vertex v3 = new Vertex(57.095377, 22.083268, 0);  // Łotwa
+        Vertex v4 = new Vertex(57.422124, 18.475312, 0);  // Gotlandia
+        Vertex v5 = new Vertex(55.088007, 14.946312, 0);  // Borholm
+        Vertex v6 = new Vertex(56.552772, 16.519914, 0);  // okolice Kalmaru, Szwecja
+        Vertex v7 = new Vertex(60.166997, 19.740839, 0);  // Wyspy Alandzkie
+        Vertex v8 = new Vertex(58.412767, 22.361481, 0);  // Sarema, Estonia
+
+        testSet.add(v1);
+        testSet.add(v2);
+        testSet.add(v3);
+        testSet.add(v4);
+        testSet.add(v5);
+        testSet.add(v6);
+        testSet.add(v7);
+        testSet.add(v8);
+
+        Map<Vertex, Boolean> isWaterMap = handlingAPI.fetchElevationData(testSet);
+
+        Assert.assertTrue(isWaterMap.get(v1));
+        Assert.assertTrue(isWaterMap.get(v2));
+        Assert.assertFalse(isWaterMap.get(v3));
+        Assert.assertFalse(isWaterMap.get(v4));
+        Assert.assertFalse(isWaterMap.get(v5));
+        Assert.assertFalse(isWaterMap.get(v6));
+        Assert.assertFalse(isWaterMap.get(v7));
+        Assert.assertFalse(isWaterMap.get(v8));
     }
 
 }

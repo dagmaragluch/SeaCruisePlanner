@@ -7,16 +7,28 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 public class HandlingAPI {
+    // custom executor
+    private final ExecutorService executorService = Executors.newFixedThreadPool(10);
 
-    public void fetchData(Set<Vertex> vertices) {
-        Map<Vertex, CompletableFuture<String>> responses = getAllResponses(vertices);
+    private final HttpClient httpClient = HttpClient.newBuilder()
+            .executor(executorService)
+            .version(HttpClient.Version.HTTP_2)
+            .connectTimeout(Duration.ofSeconds(120))
+            .build();
+
+    private final HttpClient httpClient2 = HttpClient.newBuilder()
+            .executor(executorService)
+            .version(HttpClient.Version.HTTP_2)
+            .connectTimeout(Duration.ofMillis(500))
+            .build();
+
+    public void fetchWeatherData(Set<Vertex> vertices) {
+        Map<Vertex, CompletableFuture<String>> responses = getAllResponses(vertices, true);
 
         for (Map.Entry<Vertex, CompletableFuture<String>> entry : responses.entrySet()) {
             try {
@@ -27,19 +39,34 @@ public class HandlingAPI {
         }
     }
 
+    public Map<Vertex, Boolean> fetchElevationData(Set<Vertex> vertices) {
+        Map<Vertex, Boolean> isWaterMap = new HashMap<>();
+        Map<Vertex, CompletableFuture<String>> responses = getAllResponses(vertices, false);
 
-    public Map<Vertex, URI> createTargetsMap(Set<Vertex> vertices) {
+        for (Map.Entry<Vertex, CompletableFuture<String>> entry : responses.entrySet()) {
+            try {
+                isWaterMap.put(entry.getKey(), getElevationFromJSON(entry.getKey(), entry.getValue().get()));
+
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return isWaterMap;
+    }
+
+
+    public Map<Vertex, URI> createTargetsMap(Set<Vertex> vertices, Boolean isWeatherMap) {
         Map<Vertex, URI> targets = new HashMap<>();
         for (Vertex v : vertices) {
-            targets.put(v, createURI(v, true));
+            targets.put(v, createURI(v, isWeatherMap));
         }
         return targets;
     }
 
-    public Map<Vertex, CompletableFuture<String>> getAllResponses(Set<Vertex> vertices) {
-        Map<Vertex, URI> targets = createTargetsMap(vertices);
+    public Map<Vertex, CompletableFuture<String>> getAllResponses(Set<Vertex> vertices, Boolean isWeather) {
+        Map<Vertex, URI> targets = createTargetsMap(vertices, isWeather);
 
-        HttpClient client = HttpClient.newHttpClient();
         String username = "Authorization";
         String password = "ec4e364e-1b88-11eb-a5cd-0242ac130002-ec4e36c6-1b88-11eb-a5cd-0242ac130002";
 
@@ -47,7 +74,7 @@ public class HandlingAPI {
         Map<Vertex, CompletableFuture<String>> futures =
                 targets.entrySet()
                         .stream()
-                        .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), client
+                        .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), httpClient
                                 .sendAsync(
                                         HttpRequest.newBuilder(e.getValue()).header(username, password).GET().build(),
                                         HttpResponse.BodyHandlers.ofString())
@@ -103,19 +130,15 @@ public class HandlingAPI {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(createURI(v, false))
                 .header(username, password)
-//                .timeout(Duration.of(100, ChronoUnit.MILLIS))
                 .GET()
                 .build();
 
-
-        HttpClient client = HttpClient.newBuilder().build();
-
-        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+        httpClient2.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body);
 
         HttpResponse<String> response = null;
         try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            response = httpClient2.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -124,7 +147,16 @@ public class HandlingAPI {
     }
 
 
-    public double getElevationFromJSON(Vertex v) {
+    public boolean getElevationFromJSON(Vertex v, String responseString) {      //new
+//        String responseString = getElevationResponse(v);
+        JsonObject json1 = new JsonParser().parse(responseString).getAsJsonObject();
+        JsonObject json2 = json1.get("data").getAsJsonObject();
+        String elevation = json2.get("elevation").getAsString();
+
+        return Double.parseDouble(elevation) < 0;
+    }
+
+    public double getElevationFromJSON(Vertex v) {      //old
         String responseString = getElevationResponse(v);
         JsonObject json1 = new JsonParser().parse(responseString).getAsJsonObject();
         JsonObject json2 = json1.get("data").getAsJsonObject();
