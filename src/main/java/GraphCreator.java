@@ -220,20 +220,18 @@ public class GraphCreator {
 
     /**
      * add point B to graph
-     * if some vertex is close to point B (dist <= a_2) is created edge from this vertex to B,
-     * length of this edge is equals to dist, alpha is calculated;
+     * for 12 nearest vertices is created edge from this vertex to B,
+     * length of this edge and alpha are calculated;
      * in point B doesn't start any edge (B is end point), but B is normal add to graph
      * (because is needed get weather data for point B)
      */
     public void addEndPointToGraph() {
-        double dist;
-        for (Vertex v : GRAPH.getAllVertices()) {
-            dist = Math.sqrt((B.getX() - v.getX()) * (B.getX() - v.getX()) + (B.getY() - v.getY()) * (B.getY() - v.getY()));
-            if (dist <= d) {
-                int alpha = calculateEdgeAlpha(v, B);
-                Edge edge = new Edge(v, B, alpha);
-                addEdgeToAdjacencyList(edge);
-            }
+        Set<Vertex> vertexSet = getNearestVertices(12);
+
+        for (Vertex v : vertexSet) {
+            int alpha = calculateEdgeAlpha(v, B);
+            Edge edge = new Edge(v, B, alpha);
+            addEdgeToAdjacencyList(edge);
         }
         B.setIndex(GRAPH.getVerticesCount());
         GRAPH.getAllVertices().add(B);
@@ -241,6 +239,29 @@ public class GraphCreator {
         List<Edge> edges = new ArrayList<>();
         graph.put(B, edges);
     }
+
+    /**
+     * @param k - how many vertices
+     * @return - set k nearest vertices from point B
+     */
+    public Set<Vertex> getNearestVertices(int k) {
+        Map<Vertex, Double> map = new HashMap<>();
+        List<Vertex> arr = new ArrayList<>();
+        Set<Vertex> vertexSet = new HashSet<>();
+
+        for (Vertex v : GRAPH.getAllVertices()) {
+            map.put(v, Edge.distance(v, B, "N"));
+        }
+        map.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue())
+                .forEachOrdered(x -> arr.add(x.getKey()));
+
+        for (int i = 0; i < k; i++) vertexSet.add(arr.get(i));
+
+        return vertexSet;
+    }
+
 
     /**
      * calculate angle between Oy and PQ - yacht course (relative to the north)
