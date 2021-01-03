@@ -249,6 +249,8 @@ public class GraphCreator {
         List<Vertex> arr = new ArrayList<>();
         Set<Vertex> vertexSet = new HashSet<>();
 
+        if (GRAPH.getAllVertices().size() <= k) return GRAPH.getAllVertices();
+
         for (Vertex v : GRAPH.getAllVertices()) {
             map.put(v, Edge.distance(v, B, "N"));
         }
