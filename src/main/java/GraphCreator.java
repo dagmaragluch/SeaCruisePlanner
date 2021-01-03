@@ -6,7 +6,6 @@ public class GraphCreator {
     double latA, lngA, latB, lngB;
     Point[] areaBoundary;
 
-
     public GraphCreator(Point startPort, Point endPort) {
         latA = startPort.getX();
         lngA = startPort.getY();
@@ -20,13 +19,10 @@ public class GraphCreator {
     }
 
     final double SQRT_3 = Math.sqrt(3);
-    double a = 0.1;     // dł boku trójkąta równobocznego; w stopniach geogr. !
-    double h = a / 2 * SQRT_3;  // wysokość w trójkącie równobocznym; też w stopniach geogr. !
-    double H = a * SQRT_3;  // 2 * h; w stopniach geogr. !
-    double a_2 = a * 2;
-    double areaWidth = 0.5;  // w st. geo; z każdej strony jest tyle
-
-    double d = (2 * a) / SQRT_3;   // dokładność, z jaką wyznaczne są punkty - odległość środka trójkąta od wierzchołka
+    final double a = 0.1;     // dł boku trójkąta równobocznego; w stopniach geogr. !
+    final double h = a / 2 * SQRT_3;  // wysokość w trójkącie równobocznym; też w stopniach geogr. !
+    final double areaWidth = 0.5;  // w st. geo; z każdej strony jest tyle
+    final double d = (2 * a) / SQRT_3;   // dokładność, z jaką wyznaczne są punkty - odległość środka trójkąta od wierzchołka
 
     Graph GRAPH = new Graph(new HashMap<>());
 
@@ -37,20 +33,22 @@ public class GraphCreator {
 
 
     public Vector[] fillVectorsArray() {
-        vectors[0] = new Vector(0.0, H, H);
-        vectors[3] = new Vector(a_2, 0.0, a_2);
-        vectors[6] = new Vector(0.0, -H, H);
-        vectors[9] = new Vector(-a_2, 0.0, a_2);
+        vectors[0] = new Vector(0.0, 2 * h);     //len. = 2h
+        vectors[3] = new Vector(2 * a, 0.0);     //len. = 2a
+        vectors[6] = new Vector(0.0, -2 * h);    //len. = 2h
+        vectors[9] = new Vector(-2 * a, 0.0);    //len. = 2a
 
-        vectors[1] = new Vector(a, H, a_2);
-        vectors[5] = new Vector(a, -H, a_2);
-        vectors[7] = new Vector(-a, -H, a_2);
-        vectors[11] = new Vector(-a, H, a_2);
+        //len. = 2a
+        vectors[1] = new Vector(a, 2 * h);
+        vectors[5] = new Vector(a, -2 * h);
+        vectors[7] = new Vector(-a, -2 * h);
+        vectors[11] = new Vector(-a, 2 * h);
 
-        vectors[2] = new Vector(h * SQRT_3, h, H);
-        vectors[4] = new Vector(h * SQRT_3, -h, H);
-        vectors[8] = new Vector(-h * SQRT_3, -h, H);
-        vectors[10] = new Vector(-h * SQRT_3, h, H);
+        //len. = 2h
+        vectors[2] = new Vector(h * SQRT_3, h);
+        vectors[4] = new Vector(h * SQRT_3, -h);
+        vectors[8] = new Vector(-h * SQRT_3, -h);
+        vectors[10] = new Vector(-h * SQRT_3, h);
 
         return vectors;
     }
@@ -231,7 +229,7 @@ public class GraphCreator {
         double dist;
         for (Vertex v : GRAPH.getAllVertices()) {
             dist = Math.sqrt((B.getX() - v.getX()) * (B.getX() - v.getX()) + (B.getY() - v.getY()) * (B.getY() - v.getY()));
-            if (dist <= a_2) {
+            if (dist <= d) {
                 int alpha = calculateEdgeAlpha(v, B);
                 Edge edge = new Edge(v, B, alpha);
                 addEdgeToAdjacencyList(edge);

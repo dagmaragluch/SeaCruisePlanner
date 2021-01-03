@@ -2,12 +2,10 @@ public class Vector {
 
     private final double x;
     private final double y;
-    private final double length;
 
-    public Vector(double x, double y, double length) {
+    public Vector(double x, double y) {
         this.x = x;
         this.y = y;
-        this.length = length;
     }
 
     public double getX() {
@@ -18,7 +16,4 @@ public class Vector {
         return y;
     }
 
-    public double getLength() {
-        return length;
-    }
 }
