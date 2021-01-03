@@ -139,14 +139,14 @@ public class GraphCreator {
                     if (alreadyFoundVertex == null) {      // point nie ma jeszcze w zbiorze wierzchołków
 //                        if (handlingAPI.isWater(currentNeighbour)) {    //jeśli punkt jest morzem
 
-                        newEdge = new Edge(currentPoint, currentNeighbour, i * 30, vectors[i].getLength());
+                        newEdge = new Edge(currentPoint, currentNeighbour, i * 30);
 
                         addNewVertex(currentNeighbour, pointsToCheck);
                         addEdgeToAdjacencyList(newEdge);
 //                        }
 
                     } else {                                //point jest już w zbiorze wierzchołków
-                        newEdge = new Edge(currentPoint, alreadyFoundVertex, i * 30, vectors[i].getLength());
+                        newEdge = new Edge(currentPoint, alreadyFoundVertex, i * 30);
                         addEdgeToAdjacencyList(newEdge);
                     }
                 }
@@ -233,7 +233,7 @@ public class GraphCreator {
             dist = Math.sqrt((B.getX() - v.getX()) * (B.getX() - v.getX()) + (B.getY() - v.getY()) * (B.getY() - v.getY()));
             if (dist <= a_2) {
                 int alpha = calculateEdgeAlpha(v, B);
-                Edge edge = new Edge(v, B, alpha, dist);
+                Edge edge = new Edge(v, B, alpha);
                 addEdgeToAdjacencyList(edge);
             }
         }

@@ -40,6 +40,20 @@ public class GraphCreatorTest {
 
 
     @Test
+    public void calculateDistanceTest() {
+        Vertex v1 = new Vertex(59.480396, 19.168691, 0);
+        Vertex v2 = new Vertex(54.51683, 18.55586, 0);
+        Vertex v3 = new Vertex(59.48040, 19.46869, 0);
+        Vertex v4 = new Vertex(59.73990, 18.86869, 0);
+
+        Assert.assertEquals(0.0, Edge.distance(v1, v1, "K"), 0.000000001);
+        Assert.assertEquals(Edge.distance(v2, v1, "K"), Edge.distance(v1, v2, "K"), 0.1);
+        Assert.assertEquals(16.929054, Edge.distance(v1, v3, "K"), 0.1);
+        Assert.assertEquals(33.405278, Edge.distance(v1, v4, "K"), 0.1);
+        Assert.assertEquals(18.037, Edge.distance(v1, v4, "N"), 0.1);
+    }
+
+    @Test
     public void calculateArea() {
         double x_a = 2.0;
         double y_a = 2.0;

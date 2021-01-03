@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class HandlingAPI {
     // custom executor
-    private final ExecutorService executorService = Executors.newFixedThreadPool(10);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(5);
 
     private final HttpClient httpClient = HttpClient.newBuilder()
             .executor(executorService)
@@ -24,7 +24,7 @@ public class HandlingAPI {
     private final HttpClient httpClient2 = HttpClient.newBuilder()
             .executor(executorService)
             .version(HttpClient.Version.HTTP_2)
-            .connectTimeout(Duration.ofMillis(500))
+            .connectTimeout(Duration.ofSeconds(1))
             .build();
 
     public void fetchWeatherData(Set<Vertex> vertices) {

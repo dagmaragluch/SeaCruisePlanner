@@ -86,7 +86,7 @@ public class Dijkstra {
         int windDirection = edge.getEnd().getWeatherData(actualTimePeriod).getFirst();
         double windSpeed = edge.getEnd().getWeatherData(actualTimePeriod).getSecond();
 
-        double edgeLength = edge.getEdgeLength() * DECIMAL_DEGREE_TO_KILOMETER * KILOMETER_TO_NAUTICAL_MILE;   // [NM]
+        double edgeLength = edge.getEdgeLength();   // [NM]
         int alpha = edge.getAlpha();
         int indexWindDirection = windDirectionToIndex(alpha, windDirection);
         double roundedWindSpeed = quantizeWindSpeed(windSpeed);
