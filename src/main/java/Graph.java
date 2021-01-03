@@ -4,7 +4,6 @@ public class Graph {
 
     private Map<Vertex, List<Edge>> graph;
     private Set<Vertex> allVertices = new HashSet<>();
-    private int vertexCounter = 0;
 
 
     public Graph(Map<Vertex, List<Edge>> graph){
@@ -17,10 +16,6 @@ public class Graph {
 
     public int getVerticesCount() {
         return graph.size();
-    }
-
-    public void increaseVerticesCounter(){
-        vertexCounter++;
     }
 
     public Set<Vertex> getAllVertices() {

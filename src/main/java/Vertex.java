@@ -12,7 +12,8 @@ public class Vertex {
         this.x = x;
         this.y = y;
         this.index = index;
-        this.weatherData = new ArrayList<>();
+//        this.weatherData = new ArrayList<>();
+        this.weatherData = createWeatherData();
     }
 
 
@@ -51,5 +52,20 @@ public class Vertex {
 //    public String toString() {
 //        return String.valueOf(this.getIndex());
 //    }
+
+
+    public List createWeatherData(){
+        List<Tuple<Integer, Double>> data = new ArrayList<>();
+
+        Tuple<Integer, Double> t1 = new Tuple<>(20, 5.5);
+        Tuple<Integer, Double> t2 = new Tuple<>(30, 4.7);
+        Tuple<Integer, Double> t3 = new Tuple<>(25, 4.5);
+
+        data.add(t1);
+        data.add(t2);
+        data.add(t3);
+
+        return data;
+    }
 
 }

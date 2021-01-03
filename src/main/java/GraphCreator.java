@@ -19,9 +19,8 @@ public class GraphCreator {
         areaBoundary = createArea();
     }
 
-    //final double SQRT_3 = Math.sqrt(3);
-    final double SQRT_3 = 1.73;
-    double a = 0.15;     // dł boku trójkąta równobocznego; w stopniach geogr. !
+    final double SQRT_3 = Math.sqrt(3);
+    double a = 0.1;     // dł boku trójkąta równobocznego; w stopniach geogr. !
     double h = a / 2 * SQRT_3;  // wysokość w trójkącie równobocznym; też w stopniach geogr. !
     double H = a * SQRT_3;  // 2 * h; w stopniach geogr. !
     double a_2 = a * 2;
@@ -34,10 +33,7 @@ public class GraphCreator {
     Map<Vertex, List<Edge>> graph = GRAPH.getGraph();
     Vector[] vectors = new Vector[12];
 
-
     HandlingAPI handlingAPI = new HandlingAPI();
-
-    List<Edge> potentialEdges = new ArrayList<>();
 
 
     public Vector[] fillVectorsArray() {
@@ -59,54 +55,37 @@ public class GraphCreator {
         return vectors;
     }
 
-//    /**
-//     * @return 4 points described parallelogram
-//     */
-//    public Point[] createArea() {
-//        Point[] areaBoundary = new Point[4];
-//        areaBoundary[0] = new Point(latA, lngA - areaWidth);
-//        areaBoundary[1] = new Point(latA, lngA + areaWidth);
-//        areaBoundary[2] = new Point(latB, lngB + areaWidth);
-//        areaBoundary[3] = new Point(latB, lngB - areaWidth);
-//        return areaBoundary;
-//    }
 
     /**
-     * @return 4 points described parallelogram
+     * @return 4 points described rectangle
      */
     public Point[] createArea() {
 
-        double x_a = latA;
-        double y_a = lngA;
-        double x_b = latB;
-        double y_b = lngB;
-        double d = areaWidth;
-
-        double a = (y_a - y_b) / (x_a - x_b);
-        double b_prim_dla_A = y_a + x_a / a;
+        double a = (lngA - lngB) / (latA - latB);
+        double b_prim_dla_A = lngA + latA / a;
 
         double mianownik = a * a + 1;
-        double polowa_licznika_dla_A = x_a * a * a + x_a;
-        double pierwiastek = Math.sqrt(d * d * a * a * a * a + d * d * a * a);
+        double czesc_licznika_dla_A = latA * a * a + latA;
+        double sqrt = Math.sqrt(areaWidth * areaWidth * a * a * a * a + areaWidth * areaWidth * a * a);
 
-        double x1 = (polowa_licznika_dla_A - pierwiastek) / mianownik;
-        double x2 = (polowa_licznika_dla_A + pierwiastek) / mianownik;
+        double x1_a = (czesc_licznika_dla_A - sqrt) / mianownik;
+        double x2_a = (czesc_licznika_dla_A + sqrt) / mianownik;
 
-        double y1 = b_prim_dla_A - x1 / a;
-        double y2 = b_prim_dla_A - x2 / a;
+        double y1_a = b_prim_dla_A - x1_a / a;
+        double y2_a = b_prim_dla_A - x2_a / a;
 
-        double polowa_licznika_dla_B = x_b * a * a + x_b;
-        double b_prim_dla_B = y_b + x_b / a;
+        double czesc_licznika_dla_B = latB * a * a + latB;
+        double b_prim_dla_B = lngB + latB / a;
 
-        double x1_b = (polowa_licznika_dla_B - pierwiastek) / mianownik;
-        double x2_b = (polowa_licznika_dla_B + pierwiastek) / mianownik;
+        double x1_b = (czesc_licznika_dla_B - sqrt) / mianownik;
+        double x2_b = (czesc_licznika_dla_B + sqrt) / mianownik;
         double y1_b = b_prim_dla_B - x1_b / a;
         double y2_b = b_prim_dla_B - x2_b / a;
 
 
         Point[] areaBoundary = new Point[4];
-        areaBoundary[0] = new Point(x1, y1);
-        areaBoundary[1] = new Point(x2, y2);
+        areaBoundary[0] = new Point(x1_a, y1_a);
+        areaBoundary[1] = new Point(x2_a, y2_a);
         areaBoundary[2] = new Point(x1_b, y1_b);
         areaBoundary[3] = new Point(x2_b, y2_b);
         return areaBoundary;
@@ -117,7 +96,7 @@ public class GraphCreator {
      * @param pointToCheck The point to check
      * @return true if the point is inside the boundary, false otherwise
      */
-    public boolean areaContains(Vertex pointToCheck) {   //??
+    public boolean areaContains(Vertex pointToCheck) {
         int i;
         int j;
         boolean result = false;
@@ -130,81 +109,7 @@ public class GraphCreator {
         return result;
     }
 
-    /*******************/
 
-
-    public void createGraphPart1() {
-        Stack<Vertex> pointsToCheck = new Stack<>();
-        Vertex currentPoint;
-        Vertex currentNeighbour;
-        vectors = fillVectorsArray();
-
-        //init - add point A
-        addNewVertex(A, pointsToCheck);
-
-
-        while (!pointsToCheck.isEmpty()) {
-
-            // ściągamy pierwszy punkt ze stosu punktów do sprawdzenia
-            currentPoint = pointsToCheck.pop();     //pop usuwa i zwraca (peek tylko zwraca) - ściąga ze stosu i nie musimy tego robić na końcu pętli
-
-
-            for (int i = 0; i < vectors.length; i++) {      //tworzymy sąsiadów wg wektorów "przesunięcia"
-
-                //tworzymy danego sąsiada
-                currentNeighbour =
-                        new Vertex(currentPoint.getX() + vectors[i].getX(),
-                                currentPoint.getY() + vectors[i].getY(), -1);
-
-                if (areaContains(currentNeighbour)) {    //jeśli punkt nalezy do area
-                    Edge newEdge;
-                    Vertex alreadyFoundVertex = isPointInVertices(currentNeighbour); // vertex, witch we already found in allVertices
-
-                    if (alreadyFoundVertex == null) {      // point nie ma jeszcze w zbiorze wierzchołków
-                        newEdge = new Edge(currentPoint, currentNeighbour, i * 30, vectors[i].getLength());
-                        addNewVertex(currentNeighbour, pointsToCheck);
-                    } else {                                //point jest już w zbiorze wierzchołków
-                        newEdge = new Edge(currentPoint, alreadyFoundVertex, i * 30, vectors[i].getLength());
-                    }
-                    potentialEdges.add(newEdge);
-                }
-            }
-        }
-    }
-
-
-    public void createGraphPart2() {
-        Map<Vertex, Boolean> isWaterMap = handlingAPI.fetchElevationData(GRAPH.getAllVertices());
-
-        //to test
-//        Map<Vertex, Boolean> isWaterMap = new HashMap<>();
-//        for (Vertex v: GRAPH.getAllVertices()) isWaterMap.put(v, true);
-
-        graph.entrySet()
-                .removeIf(
-                        entry -> (!isWaterMap.get(entry.getKey())));
-
-
-        GRAPH.getAllVertices().removeIf(v -> !isWaterMap.get(v));
-
-
-        for (Edge edge : potentialEdges) {
-            if (isWaterMap.get(edge.getStart())) { //is valid edge - start and End vertex is water
-                if (isWaterMap.get(edge.getEnd()))
-                    addEdgeToAdjacencyList(edge);
-            }
-        }
-        addEndPointToGraph();
-    }
-
-
-//    public void createGraph() {
-//        createGraphPart1();
-//        createGraphPart2();
-//    }
-
-
-    /*********************/
     public void createGraph() {
         Stack<Vertex> pointsToCheck = new Stack<>();
         Vertex currentPoint;
@@ -289,9 +194,7 @@ public class GraphCreator {
      */
     public void addNewVertex(Vertex newVertex, Stack<Vertex> pointsToCheck) {
 
-//        newVertex.setIndex(GRAPH.vertexCounter);     //nadajemy numer i dodajemy do zbioru wszystkich wierzchołków
         newVertex.setIndex(GRAPH.getVerticesCount());     //nadajemy numer i dodajemy do zbioru wszystkich wierzchołków
-        GRAPH.increaseVerticesCounter();
         GRAPH.getAllVertices().add(newVertex);
 
         List<Edge> edges = new ArrayList<>();   //tworzymy nowa listę, dodajemy wierzchołek i dodajemy listę do grafu
@@ -334,7 +237,6 @@ public class GraphCreator {
                 addEdgeToAdjacencyList(edge);
             }
         }
-//        B.setIndex(GRAPH.vertexCounter);
         B.setIndex(GRAPH.getVerticesCount());
         GRAPH.getAllVertices().add(B);
 
