@@ -3,19 +3,20 @@ import java.util.*;
 public class Dijkstra {
     private Graph graph;
 
-//    String yachtModel = "src/main/resources/delphia47.csv";
-        String yachtModel = "src/main/resources/bavaria46_cruiser.csv";
-    Map<Double, Double[]> yachtModelData = PolarPlotReader.readCSVFile(yachtModel);
-    int hoursFromStart = 0;
+    String yachtModel;
+    Map<Double, Double[]> yachtModelData;
+    int hoursFromStart;
 
     final double METERS_PER_SECOND_TO_KNOTS = 1.94384449244;
     final double KNOTS_TO_METERS_PER_SECOND = 0.51444444444;
-    final double KILOMETER_TO_NAUTICAL_MILE = 0.5399568;
-    final double NAUTICAL_MILE_TO_KILOMETER = 1.852;
-    final double DECIMAL_DEGREE_TO_KILOMETER = 111.196672;      //ale to na równiku
+    final static double KILOMETER_TO_NAUTICAL_MILE = 0.5399568;
+    final static double NAUTICAL_MILE_TO_KILOMETER = 1.852;
 
-    public Dijkstra(Graph graph) {
+    public Dijkstra(Graph graph, String yachtModel, int hoursFromStart) {
         this.graph = graph;
+        this.yachtModel = yachtModel;
+        this.hoursFromStart = hoursFromStart;
+        yachtModelData = PolarPlotReader.readCSVFile(yachtModel);
     }
 
     public Map<Vertex, List<Vertex>> shortestPath(Vertex source) {
@@ -153,8 +154,6 @@ public class Dijkstra {
         } else {
             return diff - 180;
         }
-
-
     }
 
 }
