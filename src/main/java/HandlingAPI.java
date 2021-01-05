@@ -28,7 +28,7 @@ public class HandlingAPI {
             .build();
 
     public void fetchWeatherData(Set<Vertex> vertices) {
-        Map<Vertex, CompletableFuture<String>> responses = getAllResponses(vertices, true);
+        Map<Vertex, CompletableFuture<String>> responses = getAllResponses(vertices);
 
         for (Map.Entry<Vertex, CompletableFuture<String>> entry : responses.entrySet()) {
             try {
@@ -39,33 +39,17 @@ public class HandlingAPI {
         }
     }
 
-    public Map<Vertex, Boolean> fetchElevationData(Set<Vertex> vertices) {
-        Map<Vertex, Boolean> isWaterMap = new HashMap<>();
-        Map<Vertex, CompletableFuture<String>> responses = getAllResponses(vertices, false);
 
-        for (Map.Entry<Vertex, CompletableFuture<String>> entry : responses.entrySet()) {
-            try {
-                isWaterMap.put(entry.getKey(), getElevationFromJSON(entry.getKey(), entry.getValue().get()));
-
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return isWaterMap;
-    }
-
-
-    public Map<Vertex, URI> createTargetsMap(Set<Vertex> vertices, Boolean isWeatherMap) {
+    public Map<Vertex, URI> createTargetsMap(Set<Vertex> vertices) {
         Map<Vertex, URI> targets = new HashMap<>();
         for (Vertex v : vertices) {
-            targets.put(v, createURI(v, isWeatherMap));
+            targets.put(v, createURI(v, true));
         }
         return targets;
     }
 
-    public Map<Vertex, CompletableFuture<String>> getAllResponses(Set<Vertex> vertices, Boolean isWeather) {
-        Map<Vertex, URI> targets = createTargetsMap(vertices, isWeather);
+    public Map<Vertex, CompletableFuture<String>> getAllResponses(Set<Vertex> vertices) {
+        Map<Vertex, URI> targets = createTargetsMap(vertices);
 
         String username = "Authorization";
         String password = "ec4e364e-1b88-11eb-a5cd-0242ac130002-ec4e36c6-1b88-11eb-a5cd-0242ac130002";
@@ -147,16 +131,7 @@ public class HandlingAPI {
     }
 
 
-    public boolean getElevationFromJSON(Vertex v, String responseString) {      //new
-//        String responseString = getElevationResponse(v);
-        JsonObject json1 = new JsonParser().parse(responseString).getAsJsonObject();
-        JsonObject json2 = json1.get("data").getAsJsonObject();
-        String elevation = json2.get("elevation").getAsString();
-
-        return Double.parseDouble(elevation) < 0;
-    }
-
-    public double getElevationFromJSON(Vertex v) {      //old
+    public double getElevationFromJSON(Vertex v) {
         String responseString = getElevationResponse(v);
         JsonObject json1 = new JsonParser().parse(responseString).getAsJsonObject();
         JsonObject json2 = json1.get("data").getAsJsonObject();
