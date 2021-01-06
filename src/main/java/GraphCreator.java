@@ -22,7 +22,8 @@ public class GraphCreator {
     final double a = 0.1;     // dł boku trójkąta równobocznego; w stopniach geogr. !
     final double h = a / 2 * SQRT_3;  // wysokość w trójkącie równobocznym; też w stopniach geogr. !
     final double areaWidth = 0.5;  // w st. geo; z każdej strony jest tyle
-    final double d = (2 * a) / SQRT_3;   // dokładność, z jaką wyznaczne są punkty - odległość środka trójkąta od wierzchołka
+    //    final double d = (2 * a) / SQRT_3;   // dokładność, z jaką wyznaczne są punkty - odległość środka trójkąta od wierzchołka
+    final double d = a;   // dokładność, z jaką wyznaczne są punkty - odległość środka trójkąta od wierzchołka
 
     Graph GRAPH = new Graph(new HashMap<>());
 
@@ -135,13 +136,13 @@ public class GraphCreator {
                     Vertex alreadyFoundVertex = isPointInVertices(currentNeighbour); // vertex, witch we already found in allVertices
 
                     if (alreadyFoundVertex == null) {      // point nie ma jeszcze w zbiorze wierzchołków
-//                        if (handlingAPI.isWater(currentNeighbour)) {    //jeśli punkt jest morzem
+                        if (handlingAPI.isWater(currentNeighbour)) {    //jeśli punkt jest morzem
 
-                        newEdge = new Edge(currentPoint, currentNeighbour, i * 30);
+                            newEdge = new Edge(currentPoint, currentNeighbour, i * 30);
 
-                        addNewVertex(currentNeighbour, pointsToCheck);
-                        addEdgeToAdjacencyList(newEdge);
-//                        }
+                            addNewVertex(currentNeighbour, pointsToCheck);
+                            addEdgeToAdjacencyList(newEdge);
+                        }
 
                     } else {                                //point jest już w zbiorze wierzchołków
                         newEdge = new Edge(currentPoint, alreadyFoundVertex, i * 30);
@@ -220,14 +221,13 @@ public class GraphCreator {
 
     /**
      * add point B to graph
-     * for 12 nearest vertices is created edge from this vertex to B,
+     * for 6 nearest vertices is created edge from this vertex to B,
      * length of this edge and alpha are calculated;
      * in point B doesn't start any edge (B is end point), but B is normal add to graph
      * (because is needed get weather data for point B)
      */
     public void addEndPointToGraph() {
-        Set<Vertex> vertexSet = getNearestVertices(12);
-
+        Set<Vertex> vertexSet = getNearestVertices(6);
         for (Vertex v : vertexSet) {
             int alpha = calculateEdgeAlpha(v, B);
             Edge edge = new Edge(v, B, alpha);

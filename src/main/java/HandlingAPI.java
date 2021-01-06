@@ -27,6 +27,10 @@ public class HandlingAPI {
             .connectTimeout(Duration.ofSeconds(1))
             .build();
 
+    private final static String authorization = "Authorization";
+    private final static String key = "ec4e364e-1b88-11eb-a5cd-0242ac130002-ec4e36c6-1b88-11eb-a5cd-0242ac130002";
+
+
     public void fetchWeatherData(Set<Vertex> vertices) {
         Map<Vertex, CompletableFuture<String>> responses = getAllResponses(vertices);
 
@@ -51,24 +55,17 @@ public class HandlingAPI {
     public Map<Vertex, CompletableFuture<String>> getAllResponses(Set<Vertex> vertices) {
         Map<Vertex, URI> targets = createTargetsMap(vertices);
 
-        String username = "Authorization";
-        String password = "ec4e364e-1b88-11eb-a5cd-0242ac130002-ec4e36c6-1b88-11eb-a5cd-0242ac130002";
-
-
-        Map<Vertex, CompletableFuture<String>> futures =
-                targets.entrySet()
-                        .stream()
-                        .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), httpClient
-                                .sendAsync(
-                                        HttpRequest.newBuilder(e.getValue()).header(username, password).GET().build(),
-                                        HttpResponse.BodyHandlers.ofString())
-                                .thenApply(HttpResponse::body)))
-                        .collect(Collectors.toMap(
-                                Map.Entry::getKey,
-                                Map.Entry::getValue
-                        ));
-
-        return futures;
+        return targets.entrySet()
+                .stream()
+                .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), httpClient
+                        .sendAsync(
+                                HttpRequest.newBuilder(e.getValue()).header(authorization, key).GET().build(),
+                                HttpResponse.BodyHandlers.ofString())
+                        .thenApply(HttpResponse::body)))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue
+                ));
     }
 
 
@@ -108,12 +105,9 @@ public class HandlingAPI {
 
 
     public String getElevationResponse(Vertex v) {
-        String username = "Authorization";
-        String password = "ec4e364e-1b88-11eb-a5cd-0242ac130002-ec4e36c6-1b88-11eb-a5cd-0242ac130002";
-
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(createURI(v, false))
-                .header(username, password)
+                .header(authorization, key)
                 .GET()
                 .build();
 
