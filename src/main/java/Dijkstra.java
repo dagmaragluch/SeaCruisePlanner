@@ -6,6 +6,7 @@ public class Dijkstra {
     String yachtModel;
     Map<Double, Double[]> yachtModelData;
     int hoursFromStart;
+    Map<Vertex, Double> distances;
 
     final double METERS_PER_SECOND_TO_KNOTS = 1.94384449244;
     final double KNOTS_TO_METERS_PER_SECOND = 0.51444444444;
@@ -17,10 +18,11 @@ public class Dijkstra {
         this.yachtModel = yachtModel;
         this.hoursFromStart = hoursFromStart;
         yachtModelData = PolarPlotReader.readCSVFile(yachtModel);
+        distances = new HashMap<>(graph.getVerticesCount());
     }
 
     public Map<Vertex, List<Vertex>> shortestPath(Vertex source) {
-        Map<Vertex, Double> distances = new HashMap<>(graph.getVerticesCount());
+//        Map<Vertex, Double> distances = new HashMap<>(graph.getVerticesCount());
         HashMap<Vertex, Vertex> predecessors = new HashMap<>(graph.getVerticesCount());
         PriorityQueue<Vertex, Double> queue = new PriorityQueue<>();
 
@@ -45,7 +47,7 @@ public class Dijkstra {
 
                 double timeFromStar = distances.get(v);     //distance (time) from start vertex
                 edge.setWeight(calculateEdgeWeight(edge, timeFromStar));
-                System.out.println(edge.toString());
+//                System.out.println(edge.toString());
 
                 if (timeFromStar + edge.getWeight() < distances.get(edgeEnd)) {
                     distances.replace(edgeEnd, timeFromStar + edge.getWeight());
@@ -69,7 +71,7 @@ public class Dijkstra {
                 }
             }
             Collections.reverse(path);
-            System.out.println(entry.getKey().getIndex() + ": " + entry.getValue());
+//            System.out.println(entry.getKey().getIndex() + ": " + entry.getValue());
         }
         return result;
     }
