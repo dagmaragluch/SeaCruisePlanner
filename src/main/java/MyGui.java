@@ -56,7 +56,7 @@ public class MyGui extends JFrame implements ActionListener {
         lDate = new JLabel("Data wypłynięcia");
 
         button = new JButton();
-        button.setText("Wypłyń!");  // na głębię
+        button.setText("Oblicz");
         button.addActionListener(myGui);
 //        button.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
@@ -73,18 +73,23 @@ public class MyGui extends JFrame implements ActionListener {
         tPath = new JTextField();
         tPath.setPreferredSize(new Dimension(150, 20));
         tPath.setHorizontalAlignment(JTextField.CENTER);
+        tPath.setEditable(false);
         tTime = new JTextField();
         tTime.setPreferredSize(new Dimension(50, 20));
         tTime.setHorizontalAlignment(JTextField.CENTER);
+        tTime.setEditable(false);
         tStraightDistance = new JTextField();
         tStraightDistance.setPreferredSize(new Dimension(50, 20));
         tStraightDistance.setHorizontalAlignment(JTextField.CENTER);
+        tStraightDistance.setEditable(false);
         tRealDistance = new JTextField();
         tRealDistance.setPreferredSize(new Dimension(50, 20));
         tRealDistance.setHorizontalAlignment(JTextField.CENTER);
+        tRealDistance.setEditable(false);
         tVelocity = new JTextField();
         tVelocity.setPreferredSize(new Dimension(50, 20));
         tVelocity.setHorizontalAlignment(JTextField.CENTER);
+        tVelocity.setEditable(false);
 
         display = new JTextArea(15, 20);
         display.setEditable(false);
