@@ -6,13 +6,15 @@ import java.util.Objects;
 
 public class MyGui extends JFrame implements ActionListener {
 
+    Support support;
+
     static JFrame frame;
     static JLabel lStart, lEnd, lDate, lYacht;
     static JComboBox<String> cbStart, cbEnd, cbDate, cbYacht;
     static JButton button;
 
-    static JLabel lPath, lTime, lLength1, lLength2, lVelocity, lCoordinates;
-    static JTextField tPath, tTime, tLength1, tLength2, tVelocity;
+    static JLabel lPath, lTime, lStraightDistance, lRealDistance, lVelocity, lCoordinates;
+    static JTextField tPath, tTime, tStraightDistance, tRealDistance, tVelocity;
     static JScrollPane sCoordinates;
     static JTextArea display;
 
@@ -26,38 +28,39 @@ public class MyGui extends JFrame implements ActionListener {
         frame = new JFrame("SeaCruisePlanner");
         MyGui myGui = new MyGui();
         frame.setLayout(new BorderLayout());
-        String[] ports = {"Helsinki", "Gdynia", "Gdańsk", "Sztokholm"};
-        String[] dates = {"teraz", "jutro", "za 2 dni", "za 3 dni"};
-        String[] models = {"Bavaria40 Cruiser", "Delphia47", "Bavaria46 Cruiser", "Edel660", "Cookson50"};
+        String[] ports = {"Gdynia", "Sztokholm", "Helsinki", "Gdańsk", "Świnoujście", "Kalmar", "Karlskrona", "Ronne", "Kłajpeda", "Visby"};
+        String[] dates = {"teraz", "jutro", "za 2 dni", "za 3 dni", "za 4 dni", "za 5 dni", "za 6 dni", "za 7 dni", "za 8 dni", "za 9 dni", "później"};
+        String[] models = {"Bavaria40_Cruiser", "Delphia47", "Bavaria46_Cruiser", "Edel660", "Cookson50"};
 
         cbStart = new JComboBox<>(ports);
         cbStart.addActionListener(myGui);
         cbStart.setSelectedIndex(0);
-        lStart = new JLabel("Wybierz port startowy");
+        lStart = new JLabel("Port startowy");
 
         cbEnd = new JComboBox<>(ports);
         cbEnd.addActionListener(myGui);
-        cbEnd.setSelectedIndex(0);
-        lEnd = new JLabel("Wybierz port końcowy");
+        cbEnd.setSelectedIndex(1);
+        lEnd = new JLabel("Port końcowy");
 
         cbYacht = new JComboBox<>(models);
         cbYacht.addActionListener(myGui);
         cbYacht.setSelectedIndex(0);
-        lYacht = new JLabel("Wybierz model jachtu");
+        lYacht = new JLabel("Model jachtu");
 
         cbDate = new JComboBox<>(dates);
         cbDate.addActionListener(myGui);
         cbDate.setSelectedIndex(0);
-        lDate = new JLabel("Wybierz kiedy planujesz wypłynąć");
+        lDate = new JLabel("Data wypłynięcia");
 
         button = new JButton();
         button.setText("Wypłyń!");  // na głębię
         button.addActionListener(myGui);
+//        button.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
         lPath = new JLabel("trasa:");
         lTime = new JLabel("czas:");
-        lLength1 = new JLabel("odległość w linii prostej:");
-        lLength2 = new JLabel("długość wyzanczonej trasy:");
+        lStraightDistance = new JLabel("odległość w linii prostej:");
+        lRealDistance = new JLabel("długość wyzanczonej trasy:");
         lVelocity = new JLabel("średnia prędkość na trasie:");
         lCoordinates = new JLabel("Wyznaczona trasa:");
 
@@ -65,14 +68,14 @@ public class MyGui extends JFrame implements ActionListener {
         tPath.setPreferredSize(new Dimension(150, 20));
         tTime = new JTextField();
         tTime.setPreferredSize(new Dimension(50, 20));
-        tLength1 = new JTextField();
-        tLength1.setPreferredSize(new Dimension(50, 20));
-        tLength2 = new JTextField();
-        tLength2.setPreferredSize(new Dimension(50, 20));
+        tStraightDistance = new JTextField();
+        tStraightDistance.setPreferredSize(new Dimension(50, 20));
+        tRealDistance = new JTextField();
+        tRealDistance.setPreferredSize(new Dimension(50, 20));
         tVelocity = new JTextField();
         tVelocity.setPreferredSize(new Dimension(50, 20));
 
-        display = new JTextArea(15, 30);
+        display = new JTextArea(15, 20);
         display.setEditable(false);
         sCoordinates = new JScrollPane(display);
         sCoordinates.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -81,8 +84,10 @@ public class MyGui extends JFrame implements ActionListener {
         JPanel bigContainer = new JPanel();
         JPanel leftPanel = new JPanel();
         JPanel rightPanel = new JPanel();
+        leftPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        rightPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-//        leftPanel.setLayout(new GridLayout(5, 5));
+//        leftPanel.setLayout(new GridLayout(5, 5, 10, 10));
 
 
         leftPanel.add(lStart);
@@ -93,16 +98,16 @@ public class MyGui extends JFrame implements ActionListener {
         leftPanel.add(cbDate);
         leftPanel.add(lYacht);
         leftPanel.add(cbYacht);
-        leftPanel.add(button);
+        leftPanel.add(button, BorderLayout.CENTER);
 
-        rightPanel.add(lPath);
-        rightPanel.add(tPath);
+        rightPanel.add(lPath, BorderLayout.WEST);
+        rightPanel.add(tPath, BorderLayout.EAST);
         rightPanel.add(lTime);
         rightPanel.add(tTime);
-        rightPanel.add(lLength1);
-        rightPanel.add(tLength1);
-        rightPanel.add(lLength2);
-        rightPanel.add(tLength2);
+        rightPanel.add(lStraightDistance);
+        rightPanel.add(tStraightDistance);
+        rightPanel.add(lRealDistance);
+        rightPanel.add(tRealDistance);
         rightPanel.add(lVelocity);
         rightPanel.add(tVelocity);
         rightPanel.add(lCoordinates);
@@ -114,7 +119,7 @@ public class MyGui extends JFrame implements ActionListener {
 
 
         frame.add(bigContainer);
-        frame.setSize(600, 500);
+        frame.setSize(527, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //        frame.pack();
         frame.setVisible(true);
@@ -127,15 +132,26 @@ public class MyGui extends JFrame implements ActionListener {
 
             String start = Objects.requireNonNull(cbStart.getSelectedItem()).toString();
             String end = Objects.requireNonNull(cbEnd.getSelectedItem()).toString();
-            String date = String.valueOf(cbDate.getSelectedIndex());
             String yacht = Objects.requireNonNull(cbYacht.getSelectedItem()).toString();
+            String date = String.valueOf(cbDate.getSelectedIndex());
 
             if (start.equals(end)) {
                 JOptionPane.showMessageDialog(frame, "Wybierz inny port!");
             } else {
-                getInputData(start, end, date, yacht);
                 tPath.setText(start + " - " + end);
-                tTime.setText(String.valueOf(start.length()));
+
+                support = new Support(getInputData(start, end, yacht, date));
+                support.prepareGraph();
+                Output output = support.runDijkstra();
+
+
+                tTime.setText(output.getTime());
+                tVelocity.setText(output.getAvgVelocity());
+                tStraightDistance.setText(output.getStraightDistance());
+                tRealDistance.setText(output.getCalculatedDistance());
+                display.setText(output.getPath());
+
+
             }
 
         }
@@ -143,17 +159,17 @@ public class MyGui extends JFrame implements ActionListener {
 
     }
 
-    public String[] getInputData(String start, String end, String date, String yacht) {
+    public String[] getInputData(String start, String end, String yacht, String date) {
         String[] inputData = new String[4];
         inputData[0] = start;
         inputData[1] = end;
-        inputData[2] = date;
-        inputData[3] = yacht;
+        inputData[2] = yacht;
+        inputData[3] = date;
 
         System.err.println("start =  " + start);
         System.err.println("end =  " + end);
-        System.err.println("date =  " + date);
         System.err.println("yacht =  " + yacht);
+        System.err.println("date =  " + date);
 
         return inputData;
     }
