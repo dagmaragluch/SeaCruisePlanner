@@ -12,11 +12,11 @@ public class Support {
     public static String startPort, endPort, yachtModel, date;
     public static int hoursFromStart;
 
-    public Support(String[] input) {
-        startPort = input[0];
-        endPort = input[1];
-        yachtModel = getYachtModel(input[2]);
-        date = input[3];
+    public Support(String start, String end, String yacht, String daysToStart) {
+        startPort = start;
+        endPort = end;
+        yachtModel = getYachtModel(yacht);
+        date = daysToStart;
         hoursFromStart = getHoursFromStart(date);
     }
 

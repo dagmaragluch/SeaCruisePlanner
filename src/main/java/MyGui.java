@@ -7,7 +7,6 @@ import java.util.Objects;
 public class MyGui extends JFrame implements ActionListener {
 
     Support support;
-
     static JFrame frame;
     static JLabel lStart, lEnd, lDate, lYacht, lCommunicat;
     static JComboBox<String> cbStart, cbEnd, cbDate, cbYacht;
@@ -106,29 +105,29 @@ public class MyGui extends JFrame implements ActionListener {
 //        leftPanel.setLayout(new GridLayout(5, 5, 10, 10));
 
 
-        leftPanel.add(lStart);
-        leftPanel.add(cbStart);
-        leftPanel.add(lEnd);
-        leftPanel.add(cbEnd);
-        leftPanel.add(lDate);
-        leftPanel.add(cbDate);
-        leftPanel.add(lYacht);
-        leftPanel.add(cbYacht);
+        leftPanel.add(lStart, BorderLayout.WEST);
+        leftPanel.add(cbStart, BorderLayout.WEST);
+        leftPanel.add(lEnd, BorderLayout.WEST);
+        leftPanel.add(cbEnd, BorderLayout.WEST);
+        leftPanel.add(lDate, BorderLayout.WEST);
+        leftPanel.add(cbDate, BorderLayout.WEST);
+        leftPanel.add(lYacht, BorderLayout.WEST);
+        leftPanel.add(cbYacht, BorderLayout.WEST);
         leftPanel.add(button, BorderLayout.CENTER);
 //        leftPanel.add(lCommunicat, BorderLayout.CENTER);
 
         rightPanel.add(lPath, BorderLayout.WEST);
-        rightPanel.add(tPath, BorderLayout.EAST);
-        rightPanel.add(lTime);
-        rightPanel.add(tTime);
-        rightPanel.add(lStraightDistance);
-        rightPanel.add(tStraightDistance);
-        rightPanel.add(lRealDistance);
-        rightPanel.add(tRealDistance);
-        rightPanel.add(lVelocity);
-        rightPanel.add(tVelocity);
-        rightPanel.add(lCoordinates);
-        rightPanel.add(sCoordinates);
+        rightPanel.add(tPath, BorderLayout.WEST);
+        rightPanel.add(lTime, BorderLayout.WEST);
+        rightPanel.add(tTime, BorderLayout.WEST);
+        rightPanel.add(lStraightDistance, BorderLayout.WEST);
+        rightPanel.add(tStraightDistance, BorderLayout.WEST);
+        rightPanel.add(lRealDistance, BorderLayout.WEST);
+        rightPanel.add(tRealDistance, BorderLayout.WEST);
+        rightPanel.add(lVelocity, BorderLayout.WEST);
+        rightPanel.add(tVelocity, BorderLayout.WEST);
+        rightPanel.add(lCoordinates, BorderLayout.CENTER);
+        rightPanel.add(sCoordinates, BorderLayout.CENTER);
 
         bigContainer.setLayout(new GridLayout(1, 2));
         bigContainer.add(leftPanel);
@@ -139,6 +138,7 @@ public class MyGui extends JFrame implements ActionListener {
         frame.setSize(527, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //        frame.pack();
+//        frame.setResizable(false);
         frame.setVisible(true);
     }
 
@@ -156,8 +156,14 @@ public class MyGui extends JFrame implements ActionListener {
             } else {
                 if (!lastA.equals(start) || !lastB.equals(end)) {   // graph NOT exist
                     tPath.setText(start + " - " + end);
-                    support = new Support(getInputData(start, end, yacht, date));
-                    support.prepareGraph();
+                    try {
+                        support = new Support(start, end, yacht, date);
+                        support.prepareGraph();
+                    } catch (Exception ex) {
+                        lastA = "";
+                        lastB = "";
+                        JOptionPane.showMessageDialog(frame, "Brak połączenia z Internetem albo wykorzystano dzienny limit zapytań do API", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                     lastA = start;
                     lastB = end;
                 } else {
@@ -177,21 +183,4 @@ public class MyGui extends JFrame implements ActionListener {
             }
         }
     }
-
-    public String[] getInputData(String start, String end, String yacht, String date) {
-        String[] inputData = new String[4];
-        inputData[0] = start;
-        inputData[1] = end;
-        inputData[2] = yacht;
-        inputData[3] = date;
-
-        System.err.println("start =  " + start);
-        System.err.println("end =  " + end);
-        System.err.println("yacht =  " + yacht);
-        System.err.println("date =  " + date);
-
-        return inputData;
-    }
-
-
 }
