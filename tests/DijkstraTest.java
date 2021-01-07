@@ -17,7 +17,7 @@ public class DijkstraTest {
         graphCreator.createGraph();
         start = graphCreator.A;
         graph = graphCreator.GRAPH;
-        dijkstra = new Dijkstra(graph, "src/main/resources/delphia47.csv", 0);
+        dijkstra = new Dijkstra(graph, "src/main/resources/Delphia47.csv", 0);
     }
 
 
