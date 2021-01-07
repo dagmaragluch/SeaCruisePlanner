@@ -8,8 +8,8 @@ public class Main {
     private static Vertex start;
     private static Vertex end;
 
-    public static String startPort = "Kłajpeda";
-    public static String endPort = "Świnoujście";
+    public static String endPort = "Gdynia";
+    public static String startPort = "Świnoujście";
 
 //    public static String startPort = "Visby";
 //    public static String startPort = "Sztokholm";
@@ -76,7 +76,7 @@ public class Main {
         System.out.println("\n");
         b1.append("\n").append(end.toStringCoordinates()).append(" ");
 
-        for (int i = 1; i < cruisePath.size(); i++) {
+        for (int i = 0; i < cruisePath.size(); i++) {
             Vertex v = cruisePath.get(i);
             b1.append(v.toStringCoordinates()).append(" ");
         }

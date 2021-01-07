@@ -169,14 +169,8 @@ public class MyGui extends JFrame implements ActionListener {
                 } else {
                     JOptionPane.showMessageDialog(frame, "Warunki pogdowe na podanej trasie, w podanym terminie są niesprzyjające.");
                 }
-
-
             }
-
-
         }
-
-
     }
 
     public String[] getInputData(String start, String end, String yacht, String date) {

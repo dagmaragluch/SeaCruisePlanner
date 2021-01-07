@@ -6,12 +6,6 @@ import java.util.Map;
 
 public class PortsReader {
 
-    public static void main(String[] args) {
-        String fileName = "src/main/resources/ports.txt";
-        Map<String, Point> map = readPorts(fileName);
-    }
-
-
     public static Map<String, Point> readPorts(String portsFile) {
 
         BufferedReader br = null;
