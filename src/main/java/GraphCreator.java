@@ -22,9 +22,7 @@ public class GraphCreator {
     final double a = 0.1;     // dł boku trójkąta równobocznego; w stopniach geogr. !
     final double h = a / 2 * SQRT_3;  // wysokość w trójkącie równobocznym; też w stopniach geogr. !
     final double areaWidth = 0.5;  // w st. geo; z każdej strony jest tyle
-    //    final double d = (2 * a) / SQRT_3;   // dokładność, z jaką wyznaczne są punkty - odległość środka trójkąta od wierzchołka
-    final double d = a;   // dokładność, z jaką wyznaczne są punkty - odległość środka trójkąta od wierzchołka
-
+    final double d = a;
     Graph GRAPH = new Graph(new HashMap<>());
 
     Map<Vertex, List<Edge>> graph = GRAPH.getGraph();
@@ -122,8 +120,7 @@ public class GraphCreator {
         while (!pointsToCheck.isEmpty()) {
 
             // ściągamy pierwszy punkt ze stosu punktów do sprawdzenia
-            currentPoint = pointsToCheck.pop();     //pop usuwa i zwraca (peek tylko zwraca) - ściąga ze stosu i nie musimy tego robić na końcu pętli
-
+            currentPoint = pointsToCheck.pop();
 
             for (int i = 0; i < vectors.length; i++) {      //tworzymy sąsiadów wg wektorów "przesunięcia"
 

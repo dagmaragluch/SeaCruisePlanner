@@ -14,16 +14,8 @@ public class HourlyData {
         return windDirection;
     }
 
-    public Integer getWindDirectionValue(String key) {
-        return windDirection.get(key);
-    }
-
     public Map<String, Double> getWindSpeed() {
         return windSpeed;
-    }
-
-    public Double getWindSpeedValue(String key) {
-        return windSpeed.get(key);
     }
 
 }

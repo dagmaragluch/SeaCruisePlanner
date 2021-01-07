@@ -79,8 +79,6 @@ public class Support {
             realDistance += Edge.distance(prev, v, "N");
         }
 
-        System.out.println(b1.toString());
-
         return new Output(time, straightDistance, realDistance, b1.toString());
     }
 

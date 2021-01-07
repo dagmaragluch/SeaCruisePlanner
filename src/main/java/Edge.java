@@ -20,16 +20,8 @@ public class Edge {
         return start;
     }
 
-    public void setStart(Vertex start) {
-        this.start = start;
-    }
-
     public Vertex getEnd() {
         return end;
-    }
-
-    public void setEnd(Vertex end) {
-        this.end = end;
     }
 
     public Double getWeight() {
@@ -55,11 +47,6 @@ public class Edge {
         else
             return String.format("%s -(infinity)-> %s", start.getIndex(), end.getIndex());
     }
-
-//    @Override
-//    public String toString() {
-//        return String.format("%s->%s", start.getIndex(), end.getIndex());
-//    }
 
     /**
      * code from: https://www.geodatasource.com/developers/java
