@@ -9,7 +9,7 @@ public class MyGui extends JFrame implements ActionListener {
     Support support;
 
     static JFrame frame;
-    static JLabel lStart, lEnd, lDate, lYacht;
+    static JLabel lStart, lEnd, lDate, lYacht, lCommunicat;
     static JComboBox<String> cbStart, cbEnd, cbDate, cbYacht;
     static JButton button;
 
@@ -17,6 +17,9 @@ public class MyGui extends JFrame implements ActionListener {
     static JTextField tPath, tTime, tStraightDistance, tRealDistance, tVelocity;
     static JScrollPane sCoordinates;
     static JTextArea display;
+
+    String lastA = "";
+    String lastB = "";
 
 
     public static void main(String[] args) {
@@ -63,17 +66,25 @@ public class MyGui extends JFrame implements ActionListener {
         lRealDistance = new JLabel("długość wyzanczonej trasy:");
         lVelocity = new JLabel("średnia prędkość na trasie:");
         lCoordinates = new JLabel("Wyznaczona trasa:");
+//        lCommunicat = new JLabel();
+//        lCommunicat.setText("Trwa konstruowanie grafu i obliczanie trasy. \n Może to trochę zająć...");
+//        lCommunicat.setVisible(true);
 
         tPath = new JTextField();
         tPath.setPreferredSize(new Dimension(150, 20));
+        tPath.setHorizontalAlignment(JTextField.CENTER);
         tTime = new JTextField();
         tTime.setPreferredSize(new Dimension(50, 20));
+        tTime.setHorizontalAlignment(JTextField.CENTER);
         tStraightDistance = new JTextField();
         tStraightDistance.setPreferredSize(new Dimension(50, 20));
+        tStraightDistance.setHorizontalAlignment(JTextField.CENTER);
         tRealDistance = new JTextField();
         tRealDistance.setPreferredSize(new Dimension(50, 20));
+        tRealDistance.setHorizontalAlignment(JTextField.CENTER);
         tVelocity = new JTextField();
         tVelocity.setPreferredSize(new Dimension(50, 20));
+        tVelocity.setHorizontalAlignment(JTextField.CENTER);
 
         display = new JTextArea(15, 20);
         display.setEditable(false);
@@ -99,6 +110,7 @@ public class MyGui extends JFrame implements ActionListener {
         leftPanel.add(lYacht);
         leftPanel.add(cbYacht);
         leftPanel.add(button, BorderLayout.CENTER);
+//        leftPanel.add(lCommunicat, BorderLayout.CENTER);
 
         rightPanel.add(lPath, BorderLayout.WEST);
         rightPanel.add(tPath, BorderLayout.EAST);
@@ -129,7 +141,6 @@ public class MyGui extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == button) {
-
             String start = Objects.requireNonNull(cbStart.getSelectedItem()).toString();
             String end = Objects.requireNonNull(cbEnd.getSelectedItem()).toString();
             String yacht = Objects.requireNonNull(cbYacht.getSelectedItem()).toString();
@@ -138,21 +149,24 @@ public class MyGui extends JFrame implements ActionListener {
             if (start.equals(end)) {
                 JOptionPane.showMessageDialog(frame, "Wybierz inny port!");
             } else {
-                tPath.setText(start + " - " + end);
-
-                support = new Support(getInputData(start, end, yacht, date));
-                support.prepareGraph();
+                if (!lastA.equals(start) || !lastB.equals(end)) {   // graph NOT exist
+                    tPath.setText(start + " - " + end);
+                    support = new Support(getInputData(start, end, yacht, date));
+                    support.prepareGraph();
+                    lastA = start;
+                    lastB = end;
+                } else {
+                    support.updateDijkstra(yacht, date);    //these sames ports - graph already exist
+                }
                 Output output = support.runDijkstra();
-
 
                 tTime.setText(output.getTime());
                 tVelocity.setText(output.getAvgVelocity());
                 tStraightDistance.setText(output.getStraightDistance());
                 tRealDistance.setText(output.getCalculatedDistance());
                 display.setText(output.getPath());
-
-
             }
+
 
         }
 
