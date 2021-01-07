@@ -5,7 +5,7 @@ public class Output {
     private double calculatedDistance;
     private double avgVelocity;
     private String path;
-    private String message;
+    private boolean isGood;
 
 
     public Output(double time, double straightDistance, double calculatedDistance, String path) {
@@ -14,10 +14,11 @@ public class Output {
         this.calculatedDistance = round(calculatedDistance);
         this.avgVelocity = round(calculatedDistance / time);
         this.path = path;
+        this.isGood = true;
     }
 
     public Output() {
-        message = "Warunki pogodowe na wybranej trasie są niesprzyjające";
+        this.isGood = false;
     }
 
     public String getTime() {
@@ -40,8 +41,8 @@ public class Output {
         return path;
     }
 
-    public String getMessage() {
-        return message;
+    public boolean isGood() {
+        return isGood;
     }
 
     public double round(double number) {

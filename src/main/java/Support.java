@@ -60,7 +60,7 @@ public class Support {
 
         double time = dijkstra.distances.get(end);
 
-        if (time > Double.MAX_VALUE - 2) {
+        if (time >= 9.223372036854776E16) {
             return new Output();
         }
 
@@ -70,12 +70,12 @@ public class Support {
 
         List<Vertex> cruisePath = paths.get(end);
 
-        b1.append(start.toStringCoordinates()).append(" ");
+        b1.append(start.toStringCoordinates()).append("\n");
 
         for (int i = 1; i < cruisePath.size(); i++) {
             Vertex v = cruisePath.get(i);
             Vertex prev = cruisePath.get(i - 1);
-            b1.append(v.toStringCoordinates()).append(" ");
+            b1.append(v.toStringCoordinates()).append("\n");
             realDistance += Edge.distance(prev, v, "N");
         }
 

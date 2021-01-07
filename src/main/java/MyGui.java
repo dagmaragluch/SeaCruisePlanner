@@ -160,11 +160,17 @@ public class MyGui extends JFrame implements ActionListener {
                 }
                 Output output = support.runDijkstra();
 
-                tTime.setText(output.getTime());
-                tVelocity.setText(output.getAvgVelocity());
-                tStraightDistance.setText(output.getStraightDistance());
-                tRealDistance.setText(output.getCalculatedDistance());
-                display.setText(output.getPath());
+                if (output.isGood()) {
+                    tTime.setText(output.getTime());
+                    tVelocity.setText(output.getAvgVelocity());
+                    tStraightDistance.setText(output.getStraightDistance());
+                    tRealDistance.setText(output.getCalculatedDistance());
+                    display.setText(output.getPath());
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Warunki pogdowe na podanej trasie, w podanym terminie są niesprzyjające.");
+                }
+
+
             }
 
 
