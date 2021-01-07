@@ -30,9 +30,9 @@ public class MyGui extends JFrame implements ActionListener {
         frame = new JFrame("SeaCruisePlanner");
         MyGui myGui = new MyGui();
         frame.setLayout(new BorderLayout());
-        String[] ports = {"Gdynia", "Sztokholm", "Helsinki", "Gdańsk", "Świnoujście", "Kalmar", "Karlskrona", "Ronne", "Kłajpeda", "Visby"};
+        String[] ports = {"Gdynia", "Sztokholm", "Helsinki", "Gdańsk", "Świnoujście", "Kalmar", "Karlskrona", "Ronne", "Kłajpeda"};
         String[] dates = {"teraz", "jutro", "za 2 dni", "za 3 dni", "za 4 dni", "za 5 dni", "za 6 dni", "za 7 dni", "za 8 dni", "za 9 dni", "później"};
-        String[] models = {"Bavaria40_Cruiser", "Delphia47", "Bavaria46_Cruiser", "Edel660", "Cookson50"};
+        String[] models = {"Delphia47", "Bavaria40_Cruiser", "Bavaria46_Cruiser", "Edel660", "Cookson50"};
 
         cbStart = new JComboBox<>(ports);
         cbStart.addActionListener(myGui);
@@ -78,11 +78,11 @@ public class MyGui extends JFrame implements ActionListener {
         tTime.setHorizontalAlignment(JTextField.CENTER);
         tTime.setEditable(false);
         tStraightDistance = new JTextField();
-        tStraightDistance.setPreferredSize(new Dimension(50, 20));
+        tStraightDistance.setPreferredSize(new Dimension(65, 20));
         tStraightDistance.setHorizontalAlignment(JTextField.CENTER);
         tStraightDistance.setEditable(false);
         tRealDistance = new JTextField();
-        tRealDistance.setPreferredSize(new Dimension(50, 20));
+        tRealDistance.setPreferredSize(new Dimension(65, 20));
         tRealDistance.setHorizontalAlignment(JTextField.CENTER);
         tRealDistance.setEditable(false);
         tVelocity = new JTextField();
@@ -135,10 +135,9 @@ public class MyGui extends JFrame implements ActionListener {
 
 
         frame.add(bigContainer);
-        frame.setSize(527, 500);
+        frame.setSize(542, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.pack();
-//        frame.setResizable(false);
+        frame.setResizable(false);
         frame.setVisible(true);
     }
 

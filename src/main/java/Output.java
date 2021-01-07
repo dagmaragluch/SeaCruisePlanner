@@ -5,7 +5,7 @@ public class Output {
     private double calculatedDistance;
     private double avgVelocity;
     private String path;
-    private boolean isGood;
+    private final boolean isGood;
 
 
     public Output(double time, double straightDistance, double calculatedDistance, String path) {
@@ -22,19 +22,19 @@ public class Output {
     }
 
     public String getTime() {
-        return String.valueOf(time);
+        return time + " h";
     }
 
     public String getStraightDistance() {
-        return String.valueOf(straightDistance);
+        return straightDistance + " NM";
     }
 
     public String getCalculatedDistance() {
-        return String.valueOf(calculatedDistance);
+        return calculatedDistance + " NM";
     }
 
     public String getAvgVelocity() {
-        return String.valueOf(avgVelocity);
+        return avgVelocity + " kt";
     }
 
     public String getPath() {
