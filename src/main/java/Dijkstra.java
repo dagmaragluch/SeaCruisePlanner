@@ -107,7 +107,7 @@ public class Dijkstra {
 
 
     /**
-     * replace(?) given value to available key data from polar plot
+     * replace given value to available key data from polar plot
      *
      * @param valueToQuantize - the exact value of wind speed from weather forecast
      * @return quantized value
@@ -141,11 +141,11 @@ public class Dijkstra {
 
 
     /**
-     * //bo wiatr z lewej i z prawej burty działa tak samo
-     *
      * @param alpha         - kąt pod jakim płynie jacht względem północy (kąt odchylenia kraqwędzi grafu) - 0° oznacza jacht płynący na północ
      * @param windDirection - kąt pod jakim wieje wiatr względem północy (0° oznacza wiatr wiejący z północy)
      * @return realAngle - rzeczywisty kąt, pod jakim wiatr działa na jacht
+     *
+     * (bo wiatr z lewej i z prawej burty działa tak samo)
      */
     public int calculateAngle(int alpha, int windDirection) {
 

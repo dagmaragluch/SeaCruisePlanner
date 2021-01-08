@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Objects;
 
-public class MyGui extends JFrame implements ActionListener {
+public class SeaCruisePlanner extends JFrame implements ActionListener {
 
     Support support;
     static JFrame frame;
@@ -28,35 +28,35 @@ public class MyGui extends JFrame implements ActionListener {
 
     public static void setGuiElements() {
         frame = new JFrame("SeaCruisePlanner");
-        MyGui myGui = new MyGui();
+        SeaCruisePlanner seaCruisePlanner = new SeaCruisePlanner();
         frame.setLayout(new BorderLayout());
         String[] ports = {"Gdynia", "Sztokholm", "Helsinki", "Gdańsk", "Świnoujście", "Kalmar", "Karlskrona", "Ronne", "Kłajpeda"};
         String[] dates = {"teraz", "jutro", "za 2 dni", "za 3 dni", "za 4 dni", "za 5 dni", "za 6 dni", "za 7 dni", "za 8 dni", "za 9 dni", "później"};
         String[] models = {"Delphia47", "Bavaria40_Cruiser", "Bavaria46_Cruiser", "Edel660", "Cookson50"};
 
         cbStart = new JComboBox<>(ports);
-        cbStart.addActionListener(myGui);
+        cbStart.addActionListener(seaCruisePlanner);
         cbStart.setSelectedIndex(0);
         lStart = new JLabel("Port startowy");
 
         cbEnd = new JComboBox<>(ports);
-        cbEnd.addActionListener(myGui);
+        cbEnd.addActionListener(seaCruisePlanner);
         cbEnd.setSelectedIndex(1);
         lEnd = new JLabel("Port końcowy");
 
         cbYacht = new JComboBox<>(models);
-        cbYacht.addActionListener(myGui);
+        cbYacht.addActionListener(seaCruisePlanner);
         cbYacht.setSelectedIndex(0);
         lYacht = new JLabel("Model jachtu");
 
         cbDate = new JComboBox<>(dates);
-        cbDate.addActionListener(myGui);
+        cbDate.addActionListener(seaCruisePlanner);
         cbDate.setSelectedIndex(0);
         lDate = new JLabel("Data wypłynięcia");
 
         button = new JButton();
         button.setText("Oblicz");
-        button.addActionListener(myGui);
+        button.addActionListener(seaCruisePlanner);
 //        button.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
         lPath = new JLabel("trasa:");
