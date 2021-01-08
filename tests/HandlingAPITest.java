@@ -127,9 +127,9 @@ public class HandlingAPITest {
 
     @Test
     public void isWaterTest() {
-        Assert.assertTrue(handlingAPI.isWater(new Vertex(55.538211, 18.564577, 0)));   //środek morza
-        Assert.assertTrue(handlingAPI.isWater(new Vertex(59.142490, 19.893503, 0)));   //środek morza
-        Assert.assertFalse(handlingAPI.isWater(new Vertex(57.095377, 22.083268, 0)));  // Łotwa
+        Assert.assertTrue(handlingAPI.isWater(new Vertex(55.538211, 18.564577, 0)));   //srodek morza
+        Assert.assertTrue(handlingAPI.isWater(new Vertex(59.142490, 19.893503, 0)));   //srodek morza
+        Assert.assertFalse(handlingAPI.isWater(new Vertex(57.095377, 22.083268, 0)));  // Lotwa
         Assert.assertFalse(handlingAPI.isWater(new Vertex(57.422124, 18.475312, 0)));  // Gotlandia
         Assert.assertFalse(handlingAPI.isWater(new Vertex(55.088007, 14.946312, 0)));  // Borholm
         Assert.assertFalse(handlingAPI.isWater(new Vertex(56.552772, 16.519914, 0)));  // okolice Kalmaru, Szwecja
