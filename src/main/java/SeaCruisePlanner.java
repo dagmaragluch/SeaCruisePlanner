@@ -8,7 +8,7 @@ public class SeaCruisePlanner extends JFrame implements ActionListener {
 
     Support support;
     static JFrame frame;
-    static JLabel lStart, lEnd, lDate, lYacht, lCommunicat;
+    static JLabel lStart, lEnd, lDate, lYacht;
     static JComboBox<String> cbStart, cbEnd, cbDate, cbYacht;
     static JButton button;
 
@@ -98,8 +98,6 @@ public class SeaCruisePlanner extends JFrame implements ActionListener {
         JPanel rightPanel = new JPanel();
         leftPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         rightPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-//        leftPanel.setLayout(new GridLayout(5, 5, 10, 10));
 
 
         leftPanel.add(lStart, BorderLayout.WEST);

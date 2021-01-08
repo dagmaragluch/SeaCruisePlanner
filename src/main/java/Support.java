@@ -40,7 +40,7 @@ public class Support {
         System.out.println("FINAL GRAPH:");
         graphCreator.GRAPH.printGraphByIndexes();
 
-        System.out.println("\n Start fetching data from API\n");
+        System.out.println("\nStart fetching data from API");
         handlingAPI.fetchWeatherData(graphCreator.GRAPH.getAllVertices());
         System.out.println("end fetching data from API\n");
 
