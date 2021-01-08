@@ -30,8 +30,8 @@ public class SeaCruisePlanner extends JFrame implements ActionListener {
         frame = new JFrame("SeaCruisePlanner");
         SeaCruisePlanner seaCruisePlanner = new SeaCruisePlanner();
         frame.setLayout(new BorderLayout());
-        String[] ports = {"Gdynia", "Sztokholm", "Helsinki", "Gdańsk", "Świnoujście", "Kalmar", "Karlskrona", "Ronne", "Kłajpeda"};
-        String[] dates = {"teraz", "jutro", "za 2 dni", "za 3 dni", "za 4 dni", "za 5 dni", "za 6 dni", "za 7 dni", "za 8 dni", "za 9 dni", "później"};
+        String[] ports = {"Gdynia", "Sztokholm", "Helsinki", "Gdansk", "Swinoujscie", "Kalmar", "Karlskrona", "Ronne", "Klajpeda"};
+        String[] dates = {"teraz", "jutro", "za 2 dni", "za 3 dni", "za 4 dni", "za 5 dni", "za 6 dni", "za 7 dni", "za 8 dni", "za 9 dni", "pozniej"};
         String[] models = {"Delphia47", "Bavaria40_Cruiser", "Bavaria46_Cruiser", "Edel660", "Cookson50"};
 
         cbStart = new JComboBox<>(ports);
@@ -42,7 +42,7 @@ public class SeaCruisePlanner extends JFrame implements ActionListener {
         cbEnd = new JComboBox<>(ports);
         cbEnd.addActionListener(seaCruisePlanner);
         cbEnd.setSelectedIndex(1);
-        lEnd = new JLabel("Port końcowy");
+        lEnd = new JLabel("Port koncowy");
 
         cbYacht = new JComboBox<>(models);
         cbYacht.addActionListener(seaCruisePlanner);
@@ -52,7 +52,7 @@ public class SeaCruisePlanner extends JFrame implements ActionListener {
         cbDate = new JComboBox<>(dates);
         cbDate.addActionListener(seaCruisePlanner);
         cbDate.setSelectedIndex(0);
-        lDate = new JLabel("Data wypłynięcia");
+        lDate = new JLabel("Data wyplyniecia");
 
         button = new JButton();
         button.setText("Oblicz");
@@ -61,13 +61,10 @@ public class SeaCruisePlanner extends JFrame implements ActionListener {
 
         lPath = new JLabel("trasa:");
         lTime = new JLabel("czas:");
-        lStraightDistance = new JLabel("odległość w linii prostej:");
-        lRealDistance = new JLabel("długość wyzanczonej trasy:");
-        lVelocity = new JLabel("średnia prędkość na trasie:");
+        lStraightDistance = new JLabel("odleglosc w linii prostej:");
+        lRealDistance = new JLabel("dlugosc wyzanczonej trasy:");
+        lVelocity = new JLabel("srednia predkosc na trasie:");
         lCoordinates = new JLabel("Wyznaczona trasa:");
-//        lCommunicat = new JLabel();
-//        lCommunicat.setText("Trwa konstruowanie grafu i obliczanie trasy. \n Może to trochę zająć...");
-//        lCommunicat.setVisible(true);
 
         tPath = new JTextField();
         tPath.setPreferredSize(new Dimension(150, 20));
@@ -161,7 +158,7 @@ public class SeaCruisePlanner extends JFrame implements ActionListener {
                     } catch (Exception ex) {
                         lastA = "";
                         lastB = "";
-                        JOptionPane.showMessageDialog(frame, "Brak połączenia z Internetem albo wykorzystano dzienny limit zapytań do API", "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(frame, "Brak polaczenia z Internetem albo wykorzystano dzienny limit zapytan do API", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                     lastA = start;
                     lastB = end;
@@ -177,7 +174,7 @@ public class SeaCruisePlanner extends JFrame implements ActionListener {
                     tRealDistance.setText(output.getCalculatedDistance());
                     display.setText(output.getPath());
                 } else {
-                    JOptionPane.showMessageDialog(frame, "Warunki pogdowe na podanej trasie, w podanym terminie są niesprzyjające.");
+                    JOptionPane.showMessageDialog(frame, "Warunki pogdowe na podanej trasie, w podanym terminie sa niesprzyjajace.");
                 }
             }
         }
